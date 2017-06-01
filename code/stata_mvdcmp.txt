@@ -1,0 +1,59 @@
+# prepare data
+
+use "ideath2004.dta"
+gen id = _n
+replace age_at_death_or_cens_h = 0.5 if age_at_death_or_cens_h == 0
+stset age_at_death_or_cens_h, failure(death) id(id)
+egen birthweight_g_c = cut(birthweight_g), at(0, 1000, 1500, 2500, 4200, 10000)
+
+# 4 different setups for 4 different stata sessions
+
+    # hour-day
+    
+    stsplit time, at (1, 24)
+    gen exposure = _t-_t0
+    drop if time == 24
+    replace time = 0 if time == 0
+    replace time = 1 if time == 1
+    collapse (sum) deaths = _d person_hours = exposure, by(time birthweight_g_c congenital_anomalies apgar5 age_of_mother_c sex education_of_mother race_and_hispanic_orig_of_mother)
+    
+    # day-week
+    
+    stsplit time, at (1, 24, 168)
+    gen exposure = _t-_t0
+    drop if time == 0
+    drop if time == 168
+    replace time = 0 if time == 1
+    replace time = 1 if time == 24
+    collapse (sum) deaths = _d person_hours = exposure, by(time birthweight_g_c congenital_anomalies apgar5 age_of_mother_c sex education_of_mother race_and_hispanic_orig_of_mother)
+    
+    # week-month
+    
+    stsplit time, at (24, 168, 672)
+    gen exposure = _t-_t0
+    drop if time == 0
+    drop if time == 672
+    replace time = 0 if time == 24
+    replace time = 1 if time == 168
+    collapse (sum) deaths = _d person_hours = exposure, by(time birthweight_g_c congenital_anomalies apgar5 age_of_mother_c sex education_of_mother race_and_hispanic_orig_of_mother)
+    
+    # month-year
+    
+    stsplit time, at (168, 672)
+    gen exposure = _t-_t0
+    drop if time == 0
+    replace time = 0 if time == 168
+    replace time = 1 if time == 672
+    collapse (sum) deaths = _d person_hours = exposure, by(time birthweight_g_c congenital_anomalies apgar5 age_of_mother_c sex education_of_mother race_and_hispanic_orig_of_mother)
+
+# decompose
+
+poisson deaths i.time i.birthweight_g_c i.congenital_anomalies i.apgar5 i.age_of_mother_c i.sex i.education_of_mother i.race_and_hispanic_orig_of_mother, irr exposure(person_hours)
+
+margins i.time, predict(ir)
+gen rate = deaths/person_hours
+tabstat rate [aw=person_hours], by(time)
+
+gen log_person_hours = log(person_hours)
+
+mvdcmp time, reverse: poisson deaths i.time i.birthweight_g_c i.congenital_anomalies i.apgar5 i.age_of_mother_c i.sex i.education_of_mother i.race_and_hispanic_orig_of_mother, offset(log_person_hours)

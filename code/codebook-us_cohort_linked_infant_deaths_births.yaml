@@ -1,0 +1,1486 @@
+---
+codebook:
+    date    : 2017-05-29
+    author  : Jonas Schöley
+    contact : jschoeley@health.sdu.dk
+collection:
+    name        : Cohort Linked Birth / Infant Death Data Set
+    source      : Department of Health and Human Services, Centers for Disease Control and Prevention, National Center for Health Statistics, Division of Vital Statistics
+    date        : 2017
+    author      : National Center for Health Statistics
+    description : The linked birth and infant death data set is a valuable tool for monitoring and exploring the complex inter-relationships between infant death and risk factors present at birth. In the linked birth and infant death data set the information from the death certificate is linked to the information from the birth certificate for each infant under 1 year of age who dies in the United States, Puerto Rico, The Virgin Islands, and Guam. The purpose of the linkage is to use the many additional variables available from the birth certificate to conduct more detailed analyses of infant mortality patterns. The linked files include information from the birth certificate such as age, race, and Hispanic origin of the parents, birth weight, period of gestation, plurality, prenatal care usage, maternal education, live birth order, marital status, and maternal smoking, linked to information from the death certificate such as age at death and underlying and multiple cause of death.
+    location    : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/
+dictionary:
+    sex95: &sex95
+        '1': 'Male'
+        '2': 'Female'
+    sex03: &sex03
+        'M': 'Male'
+        'F': 'Female'
+    plurality: &plurality
+         '1': 'Single'
+         '2': 'Twin'
+         '3': 'Triplet'
+         '4': 'Quadruplet'
+         '5': 'Quintruplet or higher'
+    weekday_of_delivery: &weekday_of_delivery
+         '1': 'Sunday'
+         '2': 'Monday'
+         '3': 'Tuesday'
+         '4': 'Wednesday'
+         '5': 'Thursday'
+         '6': 'Friday'
+         '7': 'Saturday'
+    age_of_mother_c03: &age_of_mother_c03
+        '01': 'Under 15'
+        '02': '15'
+        '03': '16'
+        '04': '17'
+        '05': '18'
+        '06': '19'
+        '07': '20'
+        '08': '21'
+        '09': '22'
+        '10': '23'
+        '11': '24'
+        '12': '25'
+        '13': '26'
+        '14': '27'
+        '15': '28'
+        '16': '29'
+        '17': '30'
+        '18': '31'
+        '19': '32'
+        '20': '33'
+        '21': '34'
+        '22': '35'
+        '23': '36'
+        '24': '37'
+        '25': '38'
+        '26': '39'
+        '27': '40'
+        '28': '41'
+        '29': '42'
+        '30': '43'
+        '31': '44'
+        '32': '45'
+        '33': '46'
+        '34': '47'
+        '35': '48'
+        '36': '49'
+        '37': '50'
+        '38': '51'
+        '39': '52'
+        '40': '53'
+        '41': '54'
+    age_of_mother_c04: &age_of_mother_c04
+        '12': '10-12'
+        '13': '13'
+        '14': '14'
+        '15': '15'
+        '16': '16'
+        '17': '17'
+        '18': '18'
+        '19': '19'
+        '20': '20'
+        '21': '21'
+        '22': '22'
+        '23': '23'
+        '24': '24'
+        '25': '25'
+        '26': '26'
+        '27': '27'
+        '28': '28'
+        '29': '29'
+        '30': '30'
+        '31': '31'
+        '32': '32'
+        '33': '33'
+        '34': '34'
+        '35': '35'
+        '36': '36'
+        '37': '37'
+        '38': '38'
+        '39': '39'
+        '40': '40'
+        '41': '41'
+        '42': '42'
+        '43': '43'
+        '44': '44'
+        '45': '45'
+        '46': '46'
+        '47': '47'
+        '48': '48'
+        '49': '49'
+        '50': '50-54'
+    age_at_death_c: &age_at_death_c
+         '1': 'Under 1 hour'
+         '2': '1-23 hours'
+         '3': '1-6 days'
+         '4': '7-27 days'
+         '5': '28 days and over'
+    resident_status_of_mother: &resident_status_of_mother
+         '1': 'Residents'
+         '2': 'Intrastate nonresidents'
+         '3': 'Interstate nonresidents'
+         '4': 'Foreign residents'
+    race_and_hispanic_orig_of_mother: &race_and_hispanic_orig_of_mother
+         '1': 'Mexican'
+         '2': 'Puerto Rican'
+         '3': 'Cuban'
+         '4': 'Central or South American'
+         '5': 'Other and unknown Hispanic'
+         '6': 'Non-Hispanic White'
+         '7': 'Non-Hispanic Black'
+         '8': 'Non-Hispanic other races'
+         '9': 'Origin unknown or not stated'
+    martial_status_of_mother: &martial_status_of_mother
+         '1': 'Married'
+         '2': 'Unmarried'
+         '9': 'Unknown or not stated'
+    education_of_mother: &education_of_mother
+         '00': 'No formal education'
+         '01': '1 year of elementary school education'
+         '02': '2 years of elementary school education'
+         '03': '3 years of elementary school education'
+         '04': '4 years of elementary school education'
+         '05': '5 years of elementary school education'
+         '06': '6 years of elementary school education'
+         '07': '7 years of elementary school education'
+         '08': '8 years of elementary school education'
+         '09': '1 year of high school education'
+         '10': '2 years of high school education'
+         '11': '3 years of high school education'
+         '12': '4 years of high school education'
+         '13': '1 year of college education'
+         '14': '2 years of college education'
+         '15': '3 years of college education'
+         '16': '4 years of college education'
+         '17': '5 or more years of college education'
+         '99': 'Not stated'
+    complications_during_delivery95: &complications_during_delivery95
+          '1': 'Yes'
+          '2': 'No'
+          '8': 'Not on certificate'
+          '9': 'Not classifiable'
+    complications_during_delivery04: &complications_during_delivery04
+          '1': 'Yes'
+          '2': 'No'
+          '9': 'Unknown or not stated'
+    method_of_delivery95: &method_of_delivery95
+          '1': 'Vaginal (no previous C-section)'
+          '2': 'Vaginal (previous C-section)'
+          '3': 'Primary C-section'
+          '4': 'Repeat C-section'
+          '5': 'Not stated'
+    method_of_delivery03: &method_of_delivery03
+          '1': 'Vaginal (no previous C-section)'
+          '2': 'Vaginal (previous C-section)'
+          '3': 'Primary C-section'
+          '4': 'Repeat C-section'
+          '5': 'Not stated'
+          '6': 'Vaginal (previous C-section unknown)'
+          '7': 'C-section (previous C-section unknown)'
+    congenital_anomalies95: &congenital_anomalies95
+          '1': 'Yes'
+          '2': 'No'
+          '8': 'Not on certificate'
+          '9': 'Not classifiable'
+    congenital_anomalies04: &congenital_anomalies04
+          '1': 'Yes'
+          '2': 'No'
+          '9': 'Not classifiable'
+    abnormal_conditions_of_newborn95: &abnormal_conditions_of_newborn95
+          '1': 'Yes'
+          '2': 'No'
+          '8': 'Not on certificate'
+          '9': 'Not classifiable'
+    abnormal_conditions_of_newborn04: &abnormal_conditions_of_newborn04
+          '1': 'Yes'
+          '2': 'No'
+          '9': 'Not classifiable'
+    tobacco_use_during_pregnancy: &tobacco_use_during_pregnancy
+          '1': 'Yes'
+          '2': 'No'
+          '9': 'Unknown or not stated'
+    alcohol_use_during_pregnancy: &alcohol_use_during_pregnancy
+          '1': 'Yes'
+          '2': 'No'
+          '9': 'Unknown or not stated'
+    time_prenatal_care_began: &time_prenatal_care_began
+          '1': '1st trimester'
+          '2': '2nd trimester'
+          '3': '3rd trimester'
+          '4': 'No prenatal care'
+          '5': 'Unknown or not stated'
+files:
+    LinkCO95USDen.dat:
+        description : 1995 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO95US.zip
+        filename    : LinkCO95USDen.dat
+        variables   : &var_95
+        # Information on Mother
+            age_of_mother_y:
+                label          : Age of Mother at Delivery in Years
+                start          : 30
+                end            : 31
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values :
+            resident_status_of_mother:
+                label          : Resident Status of Mother at Birth
+                start          : 11
+                end            : 11
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *resident_status_of_mother
+                missing_values :
+            race_and_hispanic_orig_of_mother:
+                label          : Race and Hispanic Origin of Mother
+                start          : 34
+                end            : 34
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *race_and_hispanic_orig_of_mother
+                missing_values : 9
+            martial_status_of_mother:
+                label          : Martial Status of Mother
+                start          : 43
+                end            : 43
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *martial_status_of_mother
+                missing_values : 9
+            education_of_mother:
+                label          : Education of Mother
+                start          : 39
+                end            : 40
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *education_of_mother
+                missing_values : 99
+            tobacco_use_during_pregnancy:
+                label          : Mother Used Tobacco During Pregnancy
+                start          : 118
+                end            : 118
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *tobacco_use_during_pregnancy
+                missing_values : 9
+            alcohol_use_during_pregnancy:
+                label          : Mother Used Alcohol During Pregnancy
+                start          : 122
+                end            : 122
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *alcohol_use_during_pregnancy
+                missing_values : 9
+        # Information on Medical Care
+            time_prenatal_care_began:
+                label          : Time Prenatal Care Began
+                start          : 53
+                end            : 53
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *time_prenatal_care_began
+                missing_values : 5
+        # Information on Delivery
+            date_of_delivery_y:
+                label          : Delivery Year
+                start          : 7
+                end            : 10
+                type           : integer
+                format         :
+                scale          : date
+                categories     :
+                missing_values :
+            date_of_delivery_m:
+                label          : Delivery Month
+                start          : 205
+                end            : 206
+                type           : integer
+                format         :
+                scale          : date
+                categories     :
+                missing_values :
+            weekday_of_delivery:
+                label          : Weekday of Delivery
+                start          : 209
+                end            : 209
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *weekday_of_delivery
+                missing_values :
+            method_of_delivery:
+                label          : Method of Delivery
+                start          : 99
+                end            : 99
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *method_of_delivery95
+                missing_values : 5
+            prolonged_labor:
+                label          : Prolonged labor (>20 hours)
+                start          : 146
+                end            : 146
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *complications_during_delivery95
+                missing_values : [8, 9]
+        # Information on child
+            sex:
+                label          : Sex of Infant
+                start          : 79
+                end            : 79
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *sex95
+                missing_values :
+            birthweight_g:
+                label          : Birthweight in Grams
+                start          : 81
+                end            : 84
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 9999
+            gestation_at_delivery_w:
+                label          : Gestation at Delivery in Weeks
+                start          : 71
+                end            : 72
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 99
+            plurality:
+                label          : Plurality
+                start          : 89
+                end            : 89
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *plurality
+                missing_values :
+            apgar5:
+                label          : Five Minute APGAR Score
+                start          : 90
+                end            : 91
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 99
+            age_at_death_d:
+                label          : Age at Death in Days
+                start          : 211
+                end            : 213
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values :
+            age_at_death_c:
+                label          : Age at Death Recode 5
+                start          : 214
+                end            : 214
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *age_at_death_c
+                missing_values :
+            birth_injury:
+                label          : Child injured during birth
+                start          : 156
+                end            : 156
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *abnormal_conditions_of_newborn95
+                missing_values : [8, 9]
+            anencephalus:
+                label          : Anencephalus
+                start          : 165
+                end            : 165
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            spina_bifida:
+                label          : Spina bifida / Meningocele
+                start          : 166
+                end            : 166
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            hydrocephalus:
+                label          : Hydrocephalus
+                start          : 167
+                end            : 167
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            microcephalus:
+                label          : Microcephalus
+                start          : 168
+                end            : 168
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_central_nervous_system_anomalies:
+                label          : Other central nervous system anomalies
+                start          : 169
+                end            : 169
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            heart_malformations:
+                label          : Heart malformations
+                start          : 170
+                end            : 170
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_circulatory_respiratory_anomalies:
+                label          : Other circulatory/respiratory anomalies
+                start          : 171
+                end            : 171
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            stenosis:
+                label          : Rectal atresia / stenosis
+                start          : 172
+                end            : 172
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            tracheo_esophageal_fistula:
+                label          : Tracheo-esophageal fistula / Esophageal atresia
+                start          : 173
+                end            : 173
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            omphalocele:
+                label          : Omphalocele / Gastroschisis
+                start          : 174
+                end            : 174
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_gastrointestinal_anomalies:
+                label          : Other gastrointestinal anomalies
+                start          : 175
+                end            : 175
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            malformed_genitalia:
+                label          : Malformed genitalia
+                start          : 176
+                end            : 176
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            renal_agensis:
+                label          : Renal agenesis
+                start          : 177
+                end            : 177
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_urogenital_anomalies:
+                label          : Other urogenital anomalies
+                start          : 178
+                end            : 178
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            cleft_lip:
+                label          : Cleft lip / palate
+                start          : 179
+                end            : 179
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            polydactyly:
+                label          : Polydactyly / Syndactyly / Adactyly
+                start          : 180
+                end            : 180
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            club_foot:
+                label          : Club foot
+                start          : 181
+                end            : 181
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            diaphragmatic_hernia:
+                label          : Diaphragmatic hernia
+                start          : 182
+                end            : 182
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_musculoskeletal_anomalies:
+                label          : Other musculoskeletal / integumental anomalies
+                start          : 183
+                end            : 183
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            downs_syndrome:
+                label          : Down's syndrome
+                start          : 184
+                end            : 184
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_chromosomal_anomalies:
+                label          : Other chromosomal anomalies
+                start          : 185
+                end            : 185
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_congenital_anomalies:
+                label          : Other congenital anomalies
+                start          : 186
+                end            : 186
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+    LinkCO96USDen.dat:
+        description : 1996 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO96US.zip
+        filename    : LinkCO96USDen.dat
+        variables   : *var_95
+    LinkCO97USDen.dat:
+        description : 1997 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO97US.zip
+        filename    : LinkCO97USDen.dat
+        variables   : *var_95
+    LinkCO98USDen.dat:
+        description : 1998 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO98US.zip
+        filename    : LinkCO98USDen.dat
+        variables   : *var_95
+    LinkCO99USDen.dat:
+        description : 1999 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO99US.zip
+        filename    : LinkCO99USDen.dat
+        variables   : *var_95
+    LinkCO00USDen.dat:
+        description : 2000 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO00US.zip
+        filename    : LinkCO00USDen.dat
+        variables   : *var_95
+    LinkCO01USDen.dat:
+        description : 2001 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO01US.zip
+        filename    : LinkCO01USDen.dat
+        variables   : *var_95
+    LinkCO02USDEN.dat:
+        description : 2002 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO02US.zip
+        filename    : LinkCO02USDEN.dat
+        variables   : *var_95
+    VS03LKBC.USDENPUB:
+        description : 2003 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO03US.zip
+        filename    : VS03LKBC.USDENPUB
+        variables   : &var_03
+        # Information on Mother
+            age_of_mother_c03:
+                label          : Age of Mother at Delivery in Years (2003 Coding)
+                start          : 89
+                end            : 90
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *age_of_mother_c03
+                missing_values :
+            resident_status_of_mother:
+                label          : Resident Status of Mother at Birth
+                start          : 138
+                end            : 138
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *resident_status_of_mother
+                missing_values :
+            race_and_hispanic_orig_of_mother:
+                label          : Race and Hispanic Origin of Mother
+                start          : 149
+                end            : 149
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *race_and_hispanic_orig_of_mother
+                missing_values : 9
+            martial_status_of_mother:
+                label          : Martial Status of Mother
+                start          : 153
+                end            : 153
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *martial_status_of_mother
+                missing_values : 9
+            education_of_mother:
+                label          : Education of Mother
+                start          : 156
+                end            : 157
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *education_of_mother
+                missing_values : 99
+            tobacco_use_during_pregnancy:
+                label          : Mother Used Tobacco During Pregnancy
+                start          : 290
+                end            : 290
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *tobacco_use_during_pregnancy
+                missing_values : 9
+            alcohol_use_during_pregnancy:
+                label          : Mother Used Alcohol During Pregnancy
+                start          : 295
+                end            : 295
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *alcohol_use_during_pregnancy
+                missing_values : 9
+        # Information on Medical Care
+            time_prenatal_care_began:
+                label          : Time Prenatal Care Began
+                start          : 259
+                end            : 259
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *time_prenatal_care_began
+                missing_values : 5
+        # Information on Delivery
+            date_of_delivery_y:
+                label          : Delivery Year
+                start          : 15
+                end            : 18
+                type           : integer
+                format         :
+                scale          : date
+                categories     :
+                missing_values :
+            date_of_delivery_m:
+                label          : Delivery Month
+                start          : 19
+                end            : 20
+                type           : integer
+                format         :
+                scale          : date
+                categories     :
+                missing_values :
+            weekday_of_delivery:
+                label          : Weekday of Delivery
+                start          : 29
+                end            : 29
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *weekday_of_delivery
+                missing_values :
+            method_of_delivery:
+                label          : Method of Delivery
+                start          : 401
+                end            : 401
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *method_of_delivery03
+                missing_values : 5
+            prolonged_labor:
+                label          : Prolonged labor (>20 hours)
+                start          : 382
+                end            : 382
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *complications_during_delivery95
+                missing_values : [8, 9]
+        # Information on child
+            sex:
+                label          : Sex of Infant
+                start          : 436
+                end            : 436
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *sex03
+                missing_values :
+            birthweight_g:
+                label          : Birthweight in Grams
+                start          : 467
+                end            : 470
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 9999
+            gestation_at_delivery_w:
+                label          : Gestation at Delivery in Weeks
+                start          : 451
+                end            : 452
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 99
+            plurality:
+                label          : Plurality
+                start          : 423
+                end            : 423
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *plurality
+                missing_values :
+            apgar5:
+                label          : Five Minute APGAR Score
+                start          : 415
+                end            : 416
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 99
+            age_at_death_d:
+                label          : Age at Death in Days
+                start          : 755
+                end            : 757
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values :
+            age_at_death_c:
+                label          : Age at Death Recode 5
+                start          : 758
+                end            : 758
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *age_at_death_c
+                missing_values :
+            birth_injury:
+                label          : Child injured during birth
+                start          : 484
+                end            : 484
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *abnormal_conditions_of_newborn95
+                missing_values : [8, 9]
+            anencephalus:
+                label          : Anencephalus
+                start          : 504
+                end            : 504
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            spina_bifida:
+                label          : Spina bifida / Meningocele
+                start          : 505
+                end            : 505
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            hydrocephalus:
+                label          : Hydrocephalus
+                start          : 506
+                end            : 506
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            microcephalus:
+                label          : Microcephalus
+                start          : 507
+                end            : 507
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_central_nervous_system_anomalies:
+                label          : Other central nervous system anomalies
+                start          : 508
+                end            : 508
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            heart_malformations:
+                label          : Heart malformations
+                start          : 509
+                end            : 509
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_circulatory_respiratory_anomalies:
+                label          : Other circulatory/respiratory anomalies
+                start          : 510
+                end            : 510
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            stenosis:
+                label          : Rectal atresia / stenosis
+                start          : 511
+                end            : 511
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            tracheo_esophageal_fistula:
+                label          : Tracheo-esophageal fistula / Esophageal atresia
+                start          : 512
+                end            : 512
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            omphalocele:
+                label          : Omphalocele / Gastroschisis
+                start          : 513
+                end            : 513
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_gastrointestinal_anomalies:
+                label          : Other gastrointestinal anomalies
+                start          : 514
+                end            : 514
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            malformed_genitalia:
+                label          : Malformed genitalia
+                start          : 515
+                end            : 515
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            renal_agensis:
+                label          : Renal agenesis
+                start          : 516
+                end            : 516
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_urogenital_anomalies:
+                label          : Other urogenital anomalies
+                start          : 517
+                end            : 517
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            cleft_lip:
+                label          : Cleft lip / palate
+                start          : 518
+                end            : 518
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            polydactyly:
+                label          : Polydactyly / Syndactyly / Adactyly
+                start          : 519
+                end            : 519
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            club_foot:
+                label          : Club foot
+                start          : 520
+                end            : 520
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            diaphragmatic_hernia:
+                label          : Diaphragmatic hernia
+                start          : 521
+                end            : 521
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_musculoskeletal_anomalies:
+                label          : Other musculoskeletal / integumental anomalies
+                start          : 522
+                end            : 522
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            downs_syndrome:
+                label          : Down's syndrome
+                start          : 523
+                end            : 523
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_chromosomal_anomalies:
+                label          : Other chromosomal anomalies
+                start          : 524
+                end            : 524
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+            other_congenital_anomalies:
+                label          : Other congenital anomalies
+                start          : 525
+                end            : 525
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies95
+                missing_values : [8, 9]
+    VS04LKBC.DUSDENOM:
+        description : 2004 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO04US.zip
+        filename    : VS04LKBC.DUSDENOM
+        variables   : &var_04
+        # Information on Mother
+            age_of_mother_c04:
+                label          : Age of Mother at Delivery in Years (2004 Coding)
+                start          : 89
+                end            : 90
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *age_of_mother_c04
+                missing_values :
+            resident_status_of_mother:
+                label          : Resident Status of Mother at Birth
+                start          : 138
+                end            : 138
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *resident_status_of_mother
+                missing_values :
+            race_and_hispanic_orig_of_mother:
+                label          : Race and Hispanic Origin of Mother
+                start          : 149
+                end            : 149
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *race_and_hispanic_orig_of_mother
+                missing_values : 9
+            martial_status_of_mother:
+                label          : Martial Status of Mother
+                start          : 153
+                end            : 153
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *martial_status_of_mother
+                missing_values : 9
+            education_of_mother:
+                label          : Education of Mother
+                start          : 156
+                end            : 157
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *education_of_mother
+                missing_values : 99
+            tobacco_use_during_pregnancy:
+                label          : Mother Used Tobacco During Pregnancy
+                start          : 290
+                end            : 290
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *tobacco_use_during_pregnancy
+                missing_values : 9
+            alcohol_use_during_pregnancy:
+                label          : Mother Used Alcohol During Pregnancy
+                start          : 295
+                end            : 295
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *alcohol_use_during_pregnancy
+                missing_values : 9
+        # Information on Medical Care
+            time_prenatal_care_began:
+                label          : Time Prenatal Care Began
+                start          : 259
+                end            : 259
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *time_prenatal_care_began
+                missing_values : 5
+        # Information on Delivery
+            date_of_delivery_y:
+                label          : Delivery Year
+                start          : 15
+                end            : 18
+                type           : integer
+                format         :
+                scale          : date
+                categories     :
+                missing_values :
+            date_of_delivery_m:
+                label          : Delivery Month
+                start          : 19
+                end            : 20
+                type           : integer
+                format         :
+                scale          : date
+                categories     :
+                missing_values :
+            weekday_of_delivery:
+                label          : Weekday of Delivery
+                start          : 29
+                end            : 29
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *weekday_of_delivery
+                missing_values :
+            method_of_delivery:
+                label          : Method of Delivery
+                start          : 401
+                end            : 401
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *method_of_delivery03
+                missing_values : 5
+            prolonged_labor:
+                label          : Prolonged labor (>20 hours)
+                start          : 382
+                end            : 382
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *complications_during_delivery04
+                missing_values : 9
+        # Information on child
+            sex:
+                label          : Sex of Infant
+                start          : 436
+                end            : 436
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *sex03
+                missing_values :
+            birthweight_g:
+                label          : Birthweight in Grams
+                start          : 467
+                end            : 470
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 9999
+            gestation_at_delivery_w:
+                label          : Gestation at Delivery in Weeks
+                start          : 451
+                end            : 452
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 99
+            plurality:
+                label          : Plurality
+                start          : 423
+                end            : 423
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *plurality
+                missing_values :
+            apgar5:
+                label          : Five Minute APGAR Score
+                start          : 415
+                end            : 416
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values : 99
+            age_at_death_d:
+                label          : Age at Death in Days
+                start          : 872
+                end            : 874
+                type           : integer
+                format         :
+                scale          : metric
+                categories     :
+                missing_values :
+            age_at_death_c:
+                label          : Age at Death Recode 5
+                start          : 875
+                end            : 875
+                type           : factor
+                format         :
+                scale          : ordinal
+                categories     : *age_at_death_c
+                missing_values :
+            birth_injury:
+                label          : Child injured during birth
+                start          : 484
+                end            : 484
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *abnormal_conditions_of_newborn04
+                missing_values : 9
+            anencephalus:
+                label          : Anencephalus
+                start          : 504
+                end            : 504
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            spina_bifida:
+                label          : Spina bifida / Meningocele
+                start          : 505
+                end            : 505
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            hydrocephalus:
+                label          : Hydrocephalus
+                start          : 506
+                end            : 506
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            microcephalus:
+                label          : Microcephalus
+                start          : 507
+                end            : 507
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_central_nervous_system_anomalies:
+                label          : Other central nervous system anomalies
+                start          : 508
+                end            : 508
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            heart_malformations:
+                label          : Heart malformations
+                start          : 509
+                end            : 509
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_circulatory_respiratory_anomalies:
+                label          : Other circulatory/respiratory anomalies
+                start          : 510
+                end            : 510
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            stenosis:
+                label          : Rectal atresia / stenosis
+                start          : 511
+                end            : 511
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            tracheo_esophageal_fistula:
+                label          : Tracheo-esophageal fistula / Esophageal atresia
+                start          : 512
+                end            : 512
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            omphalocele:
+                label          : Omphalocele / Gastroschisis
+                start          : 513
+                end            : 513
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_gastrointestinal_anomalies:
+                label          : Other gastrointestinal anomalies
+                start          : 514
+                end            : 514
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            malformed_genitalia:
+                label          : Malformed genitalia
+                start          : 515
+                end            : 515
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            renal_agensis:
+                label          : Renal agenesis
+                start          : 516
+                end            : 516
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_urogenital_anomalies:
+                label          : Other urogenital anomalies
+                start          : 517
+                end            : 517
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            cleft_lip:
+                label          : Cleft lip / palate
+                start          : 518
+                end            : 518
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            polydactyly:
+                label          : Polydactyly / Syndactyly / Adactyly
+                start          : 519
+                end            : 519
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            club_foot:
+                label          : Club foot
+                start          : 520
+                end            : 520
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            diaphragmatic_hernia:
+                label          : Diaphragmatic hernia
+                start          : 521
+                end            : 521
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_musculoskeletal_anomalies:
+                label          : Other musculoskeletal / integumental anomalies
+                start          : 522
+                end            : 522
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            downs_syndrome:
+                label          : Down's syndrome
+                start          : 523
+                end            : 523
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_chromosomal_anomalies:
+                label          : Other chromosomal anomalies
+                start          : 524
+                end            : 524
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+            other_congenital_anomalies:
+                label          : Other congenital anomalies
+                start          : 525
+                end            : 525
+                type           : factor
+                format         :
+                scale          : nominal
+                categories     : *congenital_anomalies04
+                missing_values : 9
+    VS05LKBC.DUSDENOM:
+        description : 2005 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO05US.zip
+        filename    : VS05LKBC.DUSDENOM
+        variables   : *var_04
+    VS06LKBC.DUSDENOM:
+        description : 2006 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO06US.zip
+        filename    : VS06LKBC.DUSDENOM
+        variables   : *var_04
+    VS07LKBC.DUSDENOM:
+        description : 2007 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO07US.zip
+        filename    : VS07LKBC.DUSDENOM
+        variables   : *var_04
+    VS08LKBC.DUSDENOM:
+        description : 2008 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO08US.zip
+        filename    : VS08LKBC.DUSDENOM
+        variables   : *var_04
+    VS09LKBC.PublicUse.DUSDENOM:
+        description : 2009 US Territory Cohort Linked Infant Deaths and Births (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO09US.zip
+        filename    : VS09LKBC.PublicUse.DUSDENOM
+        variables   : *var_04
+    VS10LKBC.PubilcUse.DUSDENOM:
+        description : 2010 US Territory Cohort Linked Infant Deaths (Denominator File)
+        format      : Fixed Width ASCII Text
+        url         : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/LinkCO10US.zip
+        filename    : VS10LKBC.PubilcUse.DUSDENOM
+        variables   : *var_04
+...
