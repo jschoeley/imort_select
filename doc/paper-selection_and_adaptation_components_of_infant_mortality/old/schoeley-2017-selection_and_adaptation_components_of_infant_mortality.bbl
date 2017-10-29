@@ -1,0 +1,261 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.6 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist[entry]{nyt/global}
+    \entry{Heligman1980}{article}{}
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=c1c7133aa7aabc520b0a189dec023543}{%
+           family={Heligman},
+           family_i={H\bibinitperiod},
+           given={L.},
+           given_i={L\bibinitperiod}}}%
+        {{uniquename=0,hash=6d6d34db904ed6a99d204b5b42708afc}{%
+           family={Pollard},
+           family_i={P\bibinitperiod},
+           given={J.\bibnamedelimi H.},
+           given_i={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \strng{namehash}{698aff060fc3987d37a209a2863982cc}
+      \strng{fullhash}{698aff060fc3987d37a209a2863982cc}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelyear}{1980}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of the Institute of Actuaries}
+      \field{number}{1}
+      \field{title}{{The Age Pattern of Mortality}}
+      \field{volume}{107}
+      \field{year}{1980}
+      \field{pages}{49\bibrangedash 80}
+      \range{pages}{32}
+      \verb{file}
+      \verb :home/jon/lucile/bib/mendeley/Heligman, Pollard - 1980 - The Age Pattern of Mortality.pdf:pdf
+      \endverb
+      \verb{url}
+      \verb http://www.jstor.org/stable/41140508
+      \endverb
+    \endentry
+    \entry{Hougaard1984}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=796f80e3f013b0417097eac392f2ea47}{%
+           family={Hougaard},
+           family_i={H\bibinitperiod},
+           given={Philip},
+           given_i={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{796f80e3f013b0417097eac392f2ea47}
+      \strng{fullhash}{796f80e3f013b0417097eac392f2ea47}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelyear}{1984}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Taking account of heterogeneity between the individuals in population based mortality studies is important. A systematic way of describing heterogeneity is by an unobserved quantity called frailty, entering the hazard multiplicatively. Until now most studies have used a gamma distributed frailty, which is mathematically convenient; for example, the distribution among survivors is also gamma. This paper shows that several other distributions have equally simple properties, the main example being the inverse Gaussian distribution. Consequences of the different distributions are examined; the inverse Gaussian makes the population homogeneous with time, whereas for the gamma the relative heterogeneity is constant.}
+      \field{annotation}{- first to point out connection between Laplace Transform and frailty models - points out that a frailty distribution with extreme variance can be used to model infant mortality}
+      \field{journaltitle}{Biometrika}
+      \field{number}{1}
+      \field{title}{{Life table methods for heterogeneous populations: Distributions describing the heterogeneity}}
+      \field{volume}{71}
+      \field{year}{1984}
+      \field{pages}{75\bibrangedash 83}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1093/biomet/71.1.75
+      \endverb
+      \verb{file}
+      \verb :home/jon/lucile/bib/mendeley/Hougaard - 1984 - Life table methods for heterogeneous populations Distributions describing the heterogeneity.pdf:pdf
+      \endverb
+      \verb{url}
+      \verb http://biomet.oxfordjournals.org/cgi/doi/10.1093/biomet/71.1.75
+      \endverb
+      \keyw{Exponential family,Frailty,Heterogeneity,Inverse Gaussian distribution,Life table}
+    \endentry
+    \entry{Levitis2011}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=2d70a04a984311961e970ee1cec9e75a}{%
+           family={Levitis},
+           family_i={L\bibinitperiod},
+           given={Daniel\bibnamedelima A.},
+           given_i={D\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{2d70a04a984311961e970ee1cec9e75a}
+      \strng{fullhash}{2d70a04a984311961e970ee1cec9e75a}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelyear}{2011}
+      \field{labelmonth}{03}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The age-specific mortality curve for many species, including humans, is U-shaped: mortality declines with age in the developing cohort (ontogenescence) before increasing with age (senescence). The field of evolutionary demography has long focused on understanding the evolution of senescence while largely failing to address the evolution of ontogenescence. The current review is the first to gather the few available hypotheses addressing the evolution of ontogenescence, examine the basis and assumptions of each and ask what the phylogenetic extent of ontogenescence may be. Ontogenescence is among the most widespread of life-history traits, occurring in every population for which I have found sufficiently detailed data, in major groups throughout the eukaryotes, across many causes of death and many life-history types. Hypotheses seeking to explain ontogenescence include those based on kin selection, the acquisition of robustness, heterogeneous frailties and life-history optimization. I propose a further hypothesis, arguing that mortality drops with age because most transitions that could trigger the risks caused by genetic and developmental malfunctions are concentrated in early life. Of these hypotheses, only those that frame ontogenescence as an evolutionary by-product rather than an adaptation can explain the tremendous diversity of organisms and environments in which it occurs.}
+      \field{annotation}{- coining the term ontogenescence for the decline in the force of mortality from conception until maturity}
+      \field{isbn}{14712954}
+      \field{issn}{14712954}
+      \field{journaltitle}{Proceedings of the Royal Society B.}
+      \field{month}{03}
+      \field{number}{1707}
+      \field{title}{{Before senescence: the evolutionary demography of ontogenesis}}
+      \field{volume}{278}
+      \field{year}{2011}
+      \field{pages}{801\bibrangedash 9}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1098/rspb.2010.2190
+      \endverb
+      \verb{file}
+      \verb :home/jon/lucile/bib/mendeley/Levitis - 2011 - Before senescence the evolutionary demography of ontogenesis.pdf:pdf
+      \endverb
+      \verb{url}
+      \verb http://www.ncbi.nlm.nih.gov/pubmed/21123273
+      \endverb
+      \keyw{evolutionary demography,juvenile mortality,ontogenescence,ontogenesis,senescence}
+    \endentry
+    \entry{Siler1979}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=5e7589fde6f79590f5e700dcaa54e2af}{%
+           family={Siler},
+           family_i={S\bibinitperiod},
+           given={William},
+           given_i={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{5e7589fde6f79590f5e700dcaa54e2af}
+      \strng{fullhash}{5e7589fde6f79590f5e700dcaa54e2af}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelyear}{1979}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{A three-component competing-risk model for animal mortality is presented, in which the additive hazards include a new model, dominant during the prematurity period; a constant hazard, dominant during the period of maturity; and the conventional Gompertz hazard, dominant during senescence. A good fit of the model is obtained to survival data for a variety of species, with both laboratory and field data being represented. Interpretation of the model parameters in terms of animal adjustment to hazards is offered.}
+      \field{journaltitle}{Ecology}
+      \field{number}{4}
+      \field{title}{{A Competing-Risk Model for Animal Mortality}}
+      \field{volume}{60}
+      \field{year}{1979}
+      \field{pages}{750\bibrangedash 757}
+      \range{pages}{8}
+      \verb{file}
+      \verb :home/jon/lucile/bib/mendeley/Siler - 1979 - A Competing-Risk Model for Animal Mortality.pdf:pdf
+      \endverb
+      \verb{url}
+      \verb http://www.jstor.org/stable/1936612
+      \endverb
+      \keyw{competing risk,hazard,life table,mortality,survival curve}
+    \endentry
+    \entry{Vaupel1979}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=a6a89399b2104e4daed3ae283c8e88db}{%
+           family={Vaupel},
+           family_i={V\bibinitperiod},
+           given={James\bibnamedelima W.},
+           given_i={J\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{uniquename=0,hash=6fb6dc1c8491f0317dfdf27aad78cd93}{%
+           family={Manton},
+           family_i={M\bibinitperiod},
+           given={Kenneth\bibnamedelima G.},
+           given_i={K\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{uniquename=0,hash=da7cbadf239f647d58536a35346f241d}{%
+           family={Stallard},
+           family_i={S\bibinitperiod},
+           given={Eric},
+           given_i={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{836fe97f3bae521323cb5df28001dd6b}
+      \strng{fullhash}{836fe97f3bae521323cb5df28001dd6b}
+      \field{sortinit}{V}
+      \field{sortinithash}{d18f5ce25ce0b5ca7f924e3f6c04870e}
+      \field{labelyear}{1979}
+      \field{labelmonth}{08}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Life table methods are developed for populations whose members differ in their endowment for longevity. Unlike standard methods, which ignore such heterogeneity, these methods use different calculations to construct cohort, period, and individual life tables. The results imply that standard methods overestimate current life expectancy and potential gains in life expectancy from health and safety interventions, while underestimating rates of individual aging, past progress in reducing mortality, and mortality differentials between pairs of populations. Calculations based on Swedish mortality data suggest that these errors may be important, especially in old age.}
+      \field{annotation}{- the paper introducing frailty models - frailty models have been described before (without using the term "frailty") by Beard, 1959}
+      \field{issn}{0070-3370}
+      \field{journaltitle}{Demography}
+      \field{month}{08}
+      \field{number}{3}
+      \field{title}{{The impact of heterogeneity in individual frailty on the dynamics of mortality}}
+      \field{volume}{16}
+      \field{year}{1979}
+      \field{pages}{439\bibrangedash 54}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.2307/2061224
+      \endverb
+      \verb{file}
+      \verb :home/jon/lucile/bib/mendeley/Vaupel, Manton, Stallard - 1979 - The impact of heterogeneity in individual frailty on the dynamics of mortality.pdf:pdf
+      \endverb
+      \verb{url}
+      \verb http://www.ncbi.nlm.nih.gov/pubmed/510638
+      \endverb
+    \endentry
+    \entry{Vaupel1985}{article}{}
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=a6a89399b2104e4daed3ae283c8e88db}{%
+           family={Vaupel},
+           family_i={V\bibinitperiod},
+           given={James\bibnamedelima W.},
+           given_i={J\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{uniquename=0,hash=682773e438c016869250934e4f06cfe0}{%
+           family={Yashin},
+           family_i={Y\bibinitperiod},
+           given={Anatoli\bibnamedelima I.},
+           given_i={A\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+      }
+      \strng{namehash}{94c644615dacdaf5dd94f4c2b7c1159c}
+      \strng{fullhash}{94c644615dacdaf5dd94f4c2b7c1159c}
+      \field{sortinit}{V}
+      \field{sortinithash}{d18f5ce25ce0b5ca7f924e3f6c04870e}
+      \field{labelyear}{1985}
+      \field{labelmonth}{08}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{As a cohort of people, animals, or machines ages, the individuals at highest risk tend to die or exit first. This differential selection can produce patterns of mortality for the population as a whole that are surprisingly different from the patterns for subpopulations or individuals. Naive acceptance of observed population patterns may lead to erroneous policy recommendations if an intervention depends on the response of individuals. Furthermore, because patterns at the individual level may be simpler than composite population patterns, both theoretical and empirical research may be unnecessarily complicated by failure to recognize the effects of heterogeneity.}
+      \field{annotation}{- points out that population hazard can decline even if in-group hazards are constant (infant mortality as a selection process)}
+      \field{isbn}{00031305}
+      \field{issn}{00031305}
+      \field{journaltitle}{The American Statistician}
+      \field{month}{08}
+      \field{number}{3}
+      \field{title}{{Heterogeneity's Ruses: Some Surprising Effects of Selection on Population Dynamics}}
+      \field{volume}{39}
+      \field{year}{1985}
+      \field{pages}{176\bibrangedash 185}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.2307/2683925
+      \endverb
+      \verb{file}
+      \verb :home/jon/lucile/bib/mendeley/Vaupel, Yashin - 1985 - Heterogeneity's Ruses Some Surprising Effects of Selection on Population Dynamics.pdf:pdf
+      \endverb
+      \verb{url}
+      \verb http://www.jstor.org/stable/2683925
+      \endverb
+      \keyw{Cohort Analysis,Demographic Factors,Differential Mortality,Length Of Life,Mortality,Policy,Population,Population At Risk,Population Dynamics,Population Policy,Research Methodology,Statistical Studies,Survivorship}
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
+

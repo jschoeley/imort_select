@@ -2,20 +2,18 @@
 # TRANSFORM DATA #
 ##################
 
-# We merge the data on births, infant- and fetal deaths from various years into
-# a single table. This of course requires the variables to be harmonized across
-# the years. Non-harmonized variables should be stored under different names,
-# e.g. plurality91, plurality94. They can be harmonized after concatenantion.
-# The matchin of variables across years is based on the variable names. If a
-# variable is available in year y, but not in year z, then it will contain NAs
-# for year z.
+# We harmonize variables across years, and recode some variables. Non-harmonized
+# variables should be stored under different names, e.g. plurality91,
+# plurality94. They can be harmonized after concatenantion. The matching of
+# variables across years is based on the variable names. If a variable is
+# available in year y, but not in year z, then it will contain NAs for year z.
 
 # Init --------------------------------------------------------------------
 
 # set available memory to 100GB (important only on windows)
 memory.limit(size = 100000)
 
-library(dplyr)
+library(tidyverse)
 library(lubridate)
 
 # Input -------------------------------------------------------------------
@@ -25,7 +23,7 @@ load("./priv/data/01-pre_harmonized/us_ideath_1995-2010.RData")
 
 # Merge -------------------------------------------------------------------
 
-# merge into common data frame
+# merge different years into common data frame
 ideath <- bind_rows(ideath)
 
 # Transform ---------------------------------------------------------------
@@ -36,7 +34,8 @@ levels(ideath$age_of_mother_c03)[1]  = 14 # "Under 15" -> 14
 levels(ideath$age_of_mother_c04)[1]  = 12 # "10-12" -> 12
 levels(ideath$age_of_mother_c04)[39] = 50 # "50-54" -> 50
 
-ideath %>%
+ideath <-
+  ideath %>%
   # HARMONIZATION ##############################################################
   mutate(
     # harmonize the age of mother across years
@@ -57,68 +56,32 @@ ideath %>%
     age_of_mother_y = ifelse(age_of_mother_y <= 14, 14, age_of_mother_y),
     age_of_mother_y = ifelse(age_of_mother_y >= 49, 49, age_of_mother_y)
   ) %>%
-  # CONCEPTION COHORT ##########################################################
-  mutate(
-    # construct conception cohorts
-    date_of_delivery_ym =
-      ymd(paste(date_of_delivery_y, date_of_delivery_m, "01", sep = "-")),
-    date_of_conception_ym =
-      round_date(date_of_delivery_ym - weeks(gestation_at_delivery_w), unit = "month"),
-    date_of_conception_y =
-      year(date_of_conception_ym)
-  ) %>%
-  # LIFETABLE INDICATORS #######################################################
-  mutate(
-    # death indicator
-    death =
-      !is.na(age_at_death_d),
-    # age at death in (completed) hours
-    # we integrate additional information
-    # available for the day of birth
-    age_at_death_h =
-      ifelse(age_at_death_d > 0,  # if death not at first day
-             age_at_death_d*24, # convert age in days to hours
-             # otherwise check if death happened in first hour
-             # or hour 1-23 and code accordingly
-             ifelse(age_at_death_c == "1-23 hours", 1, 0)),
-    # age at death in (completed) weeks
-    age_at_death_w =
-      floor(age_at_death_d/7),
-    # by definition an infant death is only registered if it occours
-    # within the first 52 weeks of life, therefore we right censor at 365 days
-    # age at death or censoring in (completed) days
-    age_at_death_or_cens_d =
-      ifelse(death, # == TRUE
-             age_at_death_d,
-             365),
-    # age at death or censoring in (completed) hours
-    age_at_death_or_cens_h =
-      ifelse(death, # == TRUE
-             age_at_death_h,
-             365*24),
-    # categorical age at death or censoring
-    age_at_death_or_cens_c =
-      cut(age_at_death_or_cens_h,
-          # 1h, 1d, 1w, 1m, 2-12m
-          breaks = c(0, 1, 24, 24*7, 24*7*4, seq(1344, 8064, 672)),
-          right = FALSE, include.lowest = TRUE)
-  ) %>%
   # RECODE VARIABLES ###########################################################
   mutate(
+    # date of delivery
+    date_of_delivery_ym =
+      ymd(paste(date_of_delivery_y, date_of_delivery_m, "01", sep = "-")),
     # discrete gestational age at delivery
     gestation_at_delivery_c =
       cut(gestation_at_delivery_w,
-          breaks = c(23, 28, 32, 37, 39, 41, 42, 52),
-          right = FALSE, include.lowest = TRUE, # actually means to include the highest
-          labels = c("extremely preterm [23,28)", "very preterm [28, 32)",
-                     "moderate to late preterm [32, 37)", "early term [37, 39)",
-                     "full term [39, 41)", "late term [41, 42)",
-                     "post term [42, 50)")),
+          breaks = c(0, 28, 32, 37, 39, 41, 42, 52),
+          labels = c("Extremely preterm <28", "Very preterm [28, 32)",
+                     "Moderate to late preterm [32, 37)", "Early term [37, 39)",
+                     "Full term [39, 41)", "Late term [41, 42)",
+                     "Post term [42, 50)"),
+          # actually means to include the highest
+          right = FALSE, include.lowest = TRUE),
+    # discrete birthweight
+    birthweight_c =
+      cut(birthweight_g,
+          breaks = c(0, 1000, 1500, 2500, 4200, Inf),
+          label = c("Extremely low", "Very low", "Low", "Regular", "High"),
+          right = FALSE),
     # discrete age of mother
     age_of_mother_c =
       cut(age_of_mother_y,
-          breaks = c(0, 14, 20, 30, 40, Inf),
-          labels = c("Child", "Teenager", "[20-30)", "[30-40)", "40+"),
+          breaks = c(0, 16, 20, 30, 40, Inf),
+          labels = c("<16", "[16, 20)", "[20, 30)", "[30, 40)", "40+"),
           right = FALSE),
     # recode education of mother
     education_of_mother =
@@ -132,6 +95,23 @@ ideath %>%
           breaks = c(1, 6, 7, 8, Inf),
           labels = c("Hispanic", "Non-Hispanic White", "Non-Hispanic Black", "Other"),
           right = FALSE),
+    # recode plurality
+    plurality =
+      recode_factor(plurality,
+                    "Single" = "Single", "Twin" = "Twin", "Triplet" = "Triplet",
+                    "Quadruplet" = "Quadruplet or higher",
+                    "Quintruplet or higher" = "Quadruplet or higher"),
+    # merge alcohol and tobacco use during pregnancy
+    alcto_use_during_pregnancy = NA,
+    alcto_use_during_pregnancy = ifelse(
+      tobacco_use_during_pregnancy == 'Yes' |
+        alcohol_use_during_pregnancy == 'Yes',
+      'Yes', alcto_use_during_pregnancy),
+    alcto_use_during_pregnancy = ifelse(
+      tobacco_use_during_pregnancy == 'No' &
+        alcohol_use_during_pregnancy == 'No',
+      'No', alcto_use_during_pregnancy),
+    alcto_use_during_pregnancy = as.factor(alcto_use_during_pregnancy),
     # any severe congenital anomalies?
     severe_congenital_anomalies =
       (anencephalus == "Yes" |
@@ -162,17 +142,61 @@ ideath %>%
          other_gastrointestinal_anomalies == "Yes" |
          stenosis == "Yes"),
     # existence and severity of congenital anomalies
-    congenital_anomalies =
-      ifelse(least_severe_congenital_anomalies, 1, 0),
-    congenital_anomalies =
-      ifelse(less_severe_congenital_anomalies, 2, congenital_anomalies),
-    congenital_anomalies =
-      ifelse(severe_congenital_anomalies, 3, congenital_anomalies),
-    # if no anomalies have been registred we assume none
-    congenital_anomalies = ifelse(is.na(congenital_anomalies), "None", congenital_anomalies),
+    congenital_anomalies = ifelse(least_severe_congenital_anomalies, 1, 0),
+    congenital_anomalies = ifelse(less_severe_congenital_anomalies, 2, congenital_anomalies),
+    congenital_anomalies = ifelse(severe_congenital_anomalies, 3, congenital_anomalies),
+    # if no anomalies have been registred (even due to NA) we assume none
+    congenital_anomalies = ifelse(is.na(congenital_anomalies), 0, congenital_anomalies),
     congenital_anomalies = factor(congenital_anomalies,
-                                  levels = 0:3, labels = c("None", "Least severe",
-                                                           "Less severe", "Severe"))
+                                  levels = 0:3,
+                                  labels = c("None", "Least severe", "Less severe", "Severe"))
+  ) %>%
+  # SET REFERENCE CATEGORIES FOR FACTOR VARIABLES
+  mutate(
+    method_of_delivery =
+      relevel(as.factor(method_of_delivery), "Vaginal (no previous C-section)"),
+    gestation_at_delivery_c =
+      relevel(gestation_at_delivery_c, "Full term [39, 41)"),
+    birthweight_c =
+      relevel(birthweight_c, "Regular"),
+    age_of_mother_c =
+      relevel(age_of_mother_c, "[20, 30)"),
+    education_of_mother =
+      relevel(education_of_mother, "High school"),
+    race_and_hispanic_orig_of_mother =
+      relevel(race_and_hispanic_orig_of_mother, "Non-Hispanic White")
+  ) %>%
+  mutate_at(
+    vars(
+      prolonged_labor,
+      birth_injury,
+      tobacco_use_during_pregnancy,
+      alcohol_use_during_pregnancy,
+      alcto_use_during_pregnancy,
+      anencephalus,
+      spina_bifida,
+      hydrocephalus,
+      microcephalus,
+      other_central_nervous_system_anomalies,
+      heart_malformations,
+      other_circulatory_respiratory_anomalies,
+      stenosis,
+      tracheo_esophageal_fistula,
+      omphalocele,
+      other_gastrointestinal_anomalies,
+      malformed_genitalia,
+      renal_agensis,
+      other_urogenital_anomalies,
+      cleft_lip,
+      polydactyly,
+      club_foot,
+      diaphragmatic_hernia,
+      other_musculoskeletal_anomalies,
+      downs_syndrome,
+      other_chromosomal_anomalies,
+      other_congenital_anomalies
+    ),
+    funs(relevel(., "No"))
   ) %>%
   # PRETTIFY
   select(
@@ -187,36 +211,12 @@ ideath %>%
     sex,
     gestation_at_delivery_w,
     gestation_at_delivery_c,
-    date_of_conception_ym,
-    date_of_conception_y,
     birthweight_g,
+    birthweight_c,
     apgar5,
     plurality,
     birth_injury,
-    # congenital anomalies
     congenital_anomalies,
-    anencephalus,
-    spina_bifida,
-    hydrocephalus,
-    microcephalus,
-    other_central_nervous_system_anomalies,
-    heart_malformations,
-    other_circulatory_respiratory_anomalies,
-    stenosis,
-    tracheo_esophageal_fistula,
-    omphalocele,
-    other_gastrointestinal_anomalies,
-    malformed_genitalia,
-    renal_agensis,
-    other_urogenital_anomalies,
-    cleft_lip,
-    polydactyly,
-    club_foot,
-    diaphragmatic_hernia,
-    other_musculoskeletal_anomalies,
-    downs_syndrome,
-    other_chromosomal_anomalies,
-    other_congenital_anomalies,
     # information on mother
     age_of_mother_y,
     age_of_mother_c,
@@ -224,27 +224,19 @@ ideath %>%
     race_and_hispanic_orig_of_mother,
     martial_status_of_mother,
     education_of_mother,
-    tobacco_use_during_pregnancy,
-    alcohol_use_during_pregnancy,
+    alcto_use_during_pregnancy,
     # information on medical care
     time_prenatal_care_began,
     # information on survival
-    death,
-    age_at_death_w,
     age_at_death_d,
-    age_at_death_h,
-    age_at_death_or_cens_d,
-    age_at_death_or_cens_h,
-    age_at_death_or_cens_c
+    age_at_death_c
   ) %>%
-  arrange(date_of_delivery_ym, age_at_death_h) -> ideath
+  arrange(date_of_delivery_ym, age_at_death_d)
 
-ideath %>% filter(death == TRUE) %>% summary
-ideath %>% filter(death == FALSE) %>% summary
+#ideath %>% filter(death == TRUE) %>% summary
+#ideath %>% filter(death == FALSE) %>% summary
 
-save(ideath, file = "./priv/data/02-harmonized/ideath.RData")
+# Save --------------------------------------------------------------------
 
-haven::write_dta(
-  ideath %>% rename(othr_cntrl_nervs_sys_anomalies = other_central_nervous_system_anomalies,
-                    othr_circ_resp_anomalies = other_circulatory_respiratory_anomalies),
-  path = "./priv/data/02-harmonized/ideath.dta")
+# save all of it
+save(ideath, file = paste0("./priv/data/02-harmonized/", Sys.Date(), "-ideath.RData"))
