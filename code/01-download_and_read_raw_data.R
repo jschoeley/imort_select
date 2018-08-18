@@ -153,7 +153,7 @@ DownloadFiles <- function (url, save_path) {
 DownloadFiles(rev(GetURL(infant_cbook))[1:2], infant_path)
 # guides
 DownloadFiles(paste0("ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Dataset_Documentation/DVS/cohortlinked/",
-                     "LinkCO", c(95:99, paste0(0, 0:9), 10), "Guide", ".pdf"), infant_path)
+                     "LinkCO", c(95:99, paste0(0, 0:9), 11), "Guide", ".pdf"), infant_path)
 
 # Read data into R, apply varspecs and store as RData ---------------------
 

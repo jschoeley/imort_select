@@ -1,12 +1,13 @@
 ---
-title: "Heterogeneous frailties and mortality selection during the first month of life"
-author: "Jonas Schöley, Jim Oeppen, Rune Lindahl-Jacobsen, James W. Vaupel"
-date: "August 11, 2017"
+title: Heterogeneous frailties and mortality selection during the first month of life
+author: Jonas Schöley, Jim Oeppen, Rune Lindahl-Jacobsen, James W. Vaupel
+date: August 11, 2017
 output:
-  pdf_document: default
   html_document: default
+  md_document: default
+  pdf_document: default
 header-includes: \usepackage{booktabs, longtable}
-bibliography: /home/jon/lucile/share/Dropbox/sci/refs/mendeley_bibtex/2016-09-imort_selection.bib
+bibliography: C:/Users/jschoeley/Dropbox/sci/refs/mendeley_bibtex/2016-09-imort_selection.bib
 abstract:
   The risk of infant death declines rapidly during the first month following birth. This rapid decline may be explained as a selection process, with the frailest children leaving the population early. A competing explanation situates the mortality decline on the individual level, pointing towards the risky transition of birth and the growth of the child thereafter.
   By analysing individual level data on US births and neonatal deaths we estimate the heterogeneity in the risk of neonatal present in the population. We show the development of the hazard of death over the first 28 days of life for various population strata. Using this information we decompose the neonatal mortality decline into a population level and an individual level component.
@@ -17,15 +18,22 @@ abstract:
 
 # Background
 
+
+
 ## Ontogenescence as an individual level process
 
 ## Ontogenescence as a population level process
 
-\newpage
+@Vaupel1983 propose a model for infant mortality that assumes a constant baseline hazard and a multiplicative frailty following a Gamma distribution with variance 500 (!). Commenting on this model @Hougaard1984 hypothesizes that the high mortality during the first year of life and the subsequent rapid decline may in fact be the result of an "extreme frailty distribution" upon birth, i.e. a distribution with a long right tail. He proposes the inverse Gamma distribution as a suitable candidate.
+
+- Feaganes, J. R. (1993, November). Unobservable heterogeneity in Weibull and Poisson Regression Models: An application to the study of infant mortality in North Carolina. University of North Carolina.
+    - parametric modelling of unobserved heterogeneity in regression models of infant mortality
+    - discusses the effect of unobserved heterogeneity on the parameter estimates in a regression model
+    - discusses omitted variables as a source of unobserved heterogeneity
 
 # Data
 
-Estimating the degree of mortality selection in infancy requires knowledge about the hazard of death in as many population strata as possible, after all it is heterogeneity in the risk of death leading to selection effects. A powerfull and publicly available data source are the "NCHS Cohort Linked Birth -- Infant Death Data Files" from the National Center for Health Statistics.^[https://www.cdc.gov/nchs/data_access/Vitalstatsonline.htm]. The data set is a complete census of births and infant deaths on the territory of the United States (without its overseas territories) and features most fields present on the birth and death certificates. The size and detail of the data allows us to produce life-tables for thousands of sub-populations, and thus quantifying the heterogeneity in perinatal mortality.
+Estimating the degree of mortality selection in infancy requires knowledge about the hazard of death in as many population strata as possible, after all it is heterogeneity in the risk of death leading to selection effects. A powerfull and publicly available data source are the "NCHS Cohort Linked Birth -- Infant Death Data Files" from the National Center for Health Statistics^[https://www.cdc.gov/nchs/data_access/Vitalstatsonline.htm]. The data set is a complete census of births and infant deaths on the territory of the United States (without its overseas territories) and features most fields present on the birth and death certificates. The size and detail of the data allows us to produce life-tables for thousands of sub-populations, and thus quantifying the heterogeneity in perinatal mortality.
 
 In order to reach the large sample size needed for a reliable estimation of infant mortality in many sub-populations we pool the six birth cohorts 2005--2010. As preliminary analyses have shown that mortality selection is mainly acting during the first month of life, we subset the data to deaths occuring during the 30 days following birth and condition our analysis on the perinatal period. This leaves us with a sample size of 25,143,288 births and 108,999 infant deaths and 762,991,625 person-days under observation.^[Like all statistics in the paper these values are calculated directly from the individual level data which gives the age at death in days.]
 
@@ -35,7 +43,7 @@ In assessing the heterogeneity in neonatal mortality we consider a set of 13 co-
 
 Consider a cohort of newborns stratified into sub-populations $z=1\ldots k$ according to mortality relevant characteristics (e.\,g.~birth-weight, gestation at birth, presence of congenital diseases etc.). For each time-point during infancy we estimate the hazard of death for both the total population, $\bar\mu(x)$, and each sub population, $\mu_z(x)$, as well as the proportion of survivors in each stratum $\pi_z(x)$. Given time points $x_2 > x_1$, how much of the difference of the population hazard at these points is explained by a change of the sub-population hazards and how much due to a change in the population composition?
 
-Decomposition problems similar to the one stated above have been tackled by many fields over the last half century. The proposed solutions can be categorized as either parametric and regression based (@Oaxaca1973, @Blinder1973, @Powers2011) or non-parametric and co-variance based (@Price1970, @Preston1989, @Schoen1992, @Vaupel2002, @Kerr2009, @Vaupel2010a, @Rebke2012). The latter approach has been formulated using life-table notation, uses aggregate level data and will be quite intuitive to demographers. The regression based approach on the other hand allows for the direct use of individual level survival data which facilitates multivariate decompositions.^[While multivariate extensions of co-variance based approaches exist, they require the calculation of a life-table for each observed combination of variable levels, which, while far from unfeasible, is rather inconvenient. Furthermore continuous variables have to be discretized which is not the case for the regression based decompositions] We will use the co-variance based decomposition method by @Vaupel2010a in order to quantify mortality selection in a continuous-age setting and then proceed to perform a multivariate decomposition of discrete mortality differences between subsequent ages using the regression based method by @Powers2011. In the following sections we describe our application of both methods.
+Decomposition problems similar to the one stated above have been tackled by many fields over the last half century. The proposed solutions can be categorized as either parametric and regression based [@Oaxaca1973, @Blinder1973, @Powers2011] or non-parametric and co-variance based [@Price1970, @Preston1989, @Schoen1992, @Vaupel2002, @Kerr2009, @Vaupel2010a, @Rebke2012]. The latter approach has been formulated using life-table notation, uses aggregate level data and will be quite intuitive to demographers. The regression based approach on the other hand allows for the direct use of individual level survival data which facilitates multivariate decompositions.^[While multivariate extensions of co-variance based approaches exist, they require the calculation of a life-table for each observed combination of variable levels, which, while far from unfeasible, is rather inconvenient. Furthermore continuous variables have to be discretized which is not the case for the regression based decompositions] We will use the co-variance based decomposition method by @Vaupel2010a in order to quantify mortality selection in a continuous-age setting and then proceed to perform a multivariate decomposition of discrete mortality differences between subsequent ages using the regression based method by @Powers2011. In the following sections we describe our application of both methods.
 
 ## Covariance based decomposition
 
@@ -91,7 +99,7 @@ $$
 \bar Y_A - \bar Y_B = \underbrace{F(X_A\beta_A) - F(X_B\beta_A)}_{\text{Selection effect}} + \underbrace{F(X_B\beta_A) - F(X_B\beta_B)}_{\text{Direct effect}}.
 $$
 
-\newpage# Description of heterogeneity in perinatal mortality
+# Description of heterogeneity in perinatal mortality
 
 \begingroup\small
 
@@ -192,7 +200,7 @@ $$
 
 ![Trajectories of the mortality hazard during the first month of life by maternal strata. The thick red line marks the population hazard, the dotted line marks the hazard for the 'missing value' category. Data: Calculated on the basis of the birth cohort linked birth-infant death data files by the National Center for Health Statistics.](./fig/2017-08-24-ilts_mother.pdf)
 
-\newpage # Univariate decomposition
+# Univariate decomposition
 
 \begingroup\small
 
@@ -302,7 +310,7 @@ $x$ & $\bar\mu(x)$ & $\dot{\bar{\mu}}(x)$ & $\dot{\bar{\mu}}(x)/\bar\mu(x)$ & $\
 \caption{Vaupel-Zhangh decomposition of the hazard of death during the neonatal period. Data: Calculated on the basis of the birth cohort linked birth-infant death data files by the National Center for Health Statistics.}
 \end{longtable}\endgroup
 
-\newpage # Multivariate decomposition
+# Multivariate decomposition
 
 \begin{table}[!htb]
   \small\centering

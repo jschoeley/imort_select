@@ -1,26 +1,29 @@
-##' title: Stratified life-table and decomposition analysis
-##' author: Jonas Schöley
+#'---
+#'title: Life-table and decomposition analysis
+#'author: Jonas Schöley
+#'date: 2018-02-21
+#'---
 
-## Strata
-#
-# clinical variables:
-#   - birthweight
-#   - gestation at delivery
-#   - 5 minute apgar score
-#   - presence and severity of congenital anomalies
-#   - plurality
-#   - presence of birth injury
-#   - sex
-#
-# social strata:
-#   - education of mother
-#   - race and hispanic orig of mother
-#   - martial status of mother
-#   - residence status of mother
-#
-# maternal risk factors:
-#   - age of mother
-#   - alcohol or tobacco use during pregnancy
+#'## Strata
+#'
+#' clinical variables:
+#'   - birthweight
+#'   - gestation at delivery
+#'   - 5 minute apgar score
+#'   - presence and severity of congenital anomalies
+#'   - plurality
+#'   - presence of birth injury
+#'   - sex
+#'
+#' social strata:
+#'   - education of mother
+#'   - race and hispanic orig of mother
+#'   - martial status of mother
+#'   - residence status of mother
+#'
+#' maternal risk factors:
+#'   - age of mother
+#'   - alcohol or tobacco use during pregnancy
 
 # Init --------------------------------------------------------------------
 
@@ -31,11 +34,11 @@ library(knitr)
 library(kableExtra)
 
 # set available memory to 100GB (important only on windows)
-memory.limit(size = 100000)
+#memory.limit(size = 100000)
 
 # Input -------------------------------------------------------------------
 
-load('./priv/data/02-harmonized/2017-08-24-ideath.RData')
+load('./priv/data/02-harmonized/2017-10-29-ideath.RData')
 
 # we focus on those born in years 2005 and 2010 and throw away anything
 # non essential. memory is precious. we add event and time variables for the
@@ -75,21 +78,21 @@ ideath_sub <-
     # basic survival information
     death, survtime_h, survtime_h_width,
     # clinical variables
-    birthweight_c, gestation_at_delivery_c, apgar5,
-    congenital_anomalies, plurality, birth_injury, sex,
+    birthweight_c3, gestation_at_delivery_c4, apgar5_c3,
+    congenital_anomalies_c3, plurality_c2, birth_injury, sex,
     # social strata
-    education_of_mother, race_and_hispanic_orig_of_mother,
-    martial_status_of_mother, resident_status_of_mother,
+    education_of_mother_c2, race_and_hispanic_orig_of_mother_c2,
+    martial_status_of_mother,
     # maternal risk factors
-    age_of_mother_c,
+    age_of_mother_c3,
     alcto_use_during_pregnancy
   )
 rm(ideath)
 
 # export a stata copy
-haven::write_dta(ideath_sub,
-                 path = './priv/data/02-harmonized/2017-08-28-ideath.dta',
-                 version = 14)
+# haven::write_dta(ideath_sub,
+#                  path = './priv/data/02-harmonized/2017-10-29-ideath.dta',
+#                  version = 14)
 
 # Analysis functions ------------------------------------------------------
 
@@ -424,14 +427,14 @@ ilt_overall <-
 ilt_multi_strata <-
   AnalyzeThis(
     ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
-    cuts = intervals_h, xout = intervals_h[!is.infinite(intervals_h)],
-    xlab = xlab, title = 'Interaction',
-    birthweight_c, gestation_at_delivery_c, apgar5,
-    congenital_anomalies, plurality
-    # sex, birth_injury,
-    # education_of_mother, race_and_hispanic_orig_of_mother,
-    # martial_status_of_mother, resident_status_of_mother,
-    # age_of_mother_c, alcto_use_during_pregnancy
+    cuts = c(0, 24, 168, Inf), xout = c(0, 24, 168, 672),
+    xlab = c('0', '24', '168'), title = 'Interaction',
+    birthweight_c3, gestation_at_delivery_c4, apgar5_c3,
+    congenital_anomalies_c3, plurality_c2
+    #sex, birth_injury,
+    #education_of_mother_c2, race_and_hispanic_orig_of_mother_c2,
+    #martial_status_of_mother,
+    #age_of_mother_c3, alcto_use_during_pregnancy
   )
 
 ilt_multi_strata$lt %>%
@@ -446,36 +449,36 @@ ilt_multi_strata$lt %>%
 ## clinical strata
 
 # birthweight
-ilt_birthweight_c <-
+ilt_birthweight_c3 <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by birthweight',
-              birthweight_c); ilt_birthweight_c
-ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_birthweight_c.pdf'), width = 7, height = 5)
+              birthweight_c3); ilt_birthweight_c3
+ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_birthweight_c3.pdf'), width = 7, height = 5)
 
 # gestation at delivery
-ilt_gestation_at_delivery_c <-
+ilt_gestation_at_delivery_c4 <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by gestation at delivery',
-              gestation_at_delivery_c); ilt_gestation_at_delivery_c
-ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_gestation_at_delivery_c.pdf'), width = 7, height = 5)
+              gestation_at_delivery_c4); ilt_gestation_at_delivery_c4
+ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_gestation_at_delivery_c4.pdf'), width = 7, height = 5)
 
 # apgar5
-ilt_apgar5 <-
+ilt_apgar5_c3 <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by APGAR 5 score',
-              apgar5); ilt_apgar5
-ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_apgar5.pdf'), width = 7, height = 5)
+              apgar5_c3); ilt_apgar5_c3
+ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_apgar5_c3.pdf'), width = 7, height = 5)
 
 # congenital anomalies
-ilt_congenital_anomalies <-
+ilt_congenital_anomalies_c3 <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by presence and severity of congenital conditions',
-              congenital_anomalies); ilt_congenital_anomalies
-ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_congenital_anomalies.pdf'), width = 7, height = 5)
+              congenital_anomalies_c3); ilt_congenital_anomalies_c3
+ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_congenital_anomalies_c3.pdf'), width = 7, height = 5)
 
 # plurality
 ilt_plurality <-
@@ -504,12 +507,12 @@ ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_sex.pdf'), width = 7, height = 5)
 ## maternal risk factors
 
 # mothers age
-ilt_age_of_mother <-
+ilt_age_of_mother_c3 <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by age of mother',
-              age_of_mother_c); ilt_age_of_mother
-ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_age_of_mother.pdf'), width = 7, height = 5)
+              age_of_mother_c3); ilt_age_of_mother_c3
+ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_age_of_mother_c3.pdf'), width = 7, height = 5)
 
 # tobacoo or alcohol use during pregnancy
 ilt_tobalc_use <-
@@ -526,7 +529,7 @@ ilt_mothers_origin <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by origin of mother',
-              race_and_hispanic_orig_of_mother); ilt_mothers_origin
+              race_and_hispanic_orig_of_mother_c2); ilt_mothers_origin
 ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_mothers_origin.pdf'), width = 7, height = 5)
 
 # mothers education
@@ -534,7 +537,7 @@ ilt_mothers_education <-
   AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
               cuts = intervals_h, xout = intervals_h_fine,
               xlab = xlab, title = 'by education of mother',
-              education_of_mother); ilt_mothers_education
+              education_of_mother_c2); ilt_mothers_education
 ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_mothers_education.pdf'), width = 7, height = 5)
 
 
@@ -545,14 +548,6 @@ ilt_mothers_martial_status <-
               xlab = xlab, title = 'by martial status of mother',
               martial_status_of_mother); ilt_mothers_martial_status
 ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_martial_status_of_mother.pdf'), width = 7, height = 5)
-
-# mothers residence status
-ilt_mothers_residence_status <-
-  AnalyzeThis(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
-              cuts = intervals_h, xout = intervals_h_fine,
-              xlab = xlab, title = 'by residence status of mother',
-              resident_status_of_mother); ilt_mothers_residence_status
-ggsave(paste0('./out/fig/', Sys.Date(), '-ilt_residence_status_of_mother.pdf'), width = 7, height = 5)
 
 # Frailty analysis --------------------------------------------------------
 

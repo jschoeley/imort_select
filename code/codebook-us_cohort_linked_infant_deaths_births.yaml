@@ -1,12 +1,12 @@
 ---
 codebook:
-    date    : 2017-05-29
+    date    : 2018-08-18
     author  : Jonas Schöley
     contact : jschoeley@health.sdu.dk
 collection:
     name        : Cohort Linked Birth / Infant Death Data Set
     source      : Department of Health and Human Services, Centers for Disease Control and Prevention, National Center for Health Statistics, Division of Vital Statistics
-    date        : 2017
+    date        : 2018
     author      : National Center for Health Statistics
     description : The linked birth and infant death data set is a valuable tool for monitoring and exploring the complex inter-relationships between infant death and risk factors present at birth. In the linked birth and infant death data set the information from the death certificate is linked to the information from the birth certificate for each infant under 1 year of age who dies in the United States, Puerto Rico, The Virgin Islands, and Guam. The purpose of the linkage is to use the many additional variables available from the birth certificate to conduct more detailed analyses of infant mortality patterns. The linked files include information from the birth certificate such as age, race, and Hispanic origin of the parents, birth weight, period of gestation, plurality, prenatal care usage, maternal education, live birth order, marital status, and maternal smoking, linked to information from the death certificate such as age at death and underlying and multiple cause of death.
     location    : ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/cohortlinkedus/

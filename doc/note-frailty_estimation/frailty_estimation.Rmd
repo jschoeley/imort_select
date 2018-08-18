@@ -1,0 +1,487 @@
+---
+title: Estimating the distribution of frailties from individual level data
+subtitle: A case study on heterogeneity in infant mortality
+author: Jonas Schöley
+date: 2018-03-16
+---
+
+In this research note I demonstrate various ways to estimate the distribution of mortality risk in a population from individual level data. I'll cover the techniques in order of increasing modelling complexity, from purely descriptive to a full Bayesian probability model.
+
+Data
+----
+
+I use the "NCHS Cohort Linked Birth -- Infant Death Data Files" from the *National Center for Health Statistics*^[https://www.cdc.gov/nchs/data_access/Vitalstatsonline.htm]. The data set is a complete census of births and infant deaths on the territory of the United States (without its overseas territories) and features most fields present on the birth and death certificates. The size and detail of the data allows to produce mortality estimates for thousands of sub-populations, and thus the quantification of heterogeneity in perinatal mortality.
+
+The following strata contribute information about the distribution of mortality risk in the population of newborns:
+
+- birthweight
+- gestation at delivery
+- 5 minute apgar score
+- presence and severity of congenital anomalies
+- plurality
+
+In order to increase the sample size I pool all data from the birth cohorts 2005 to 2010.
+
+```{r message=FALSE}
+# a system for data transformation and visualization
+library(tidyverse)
+# load microdata on births and infant deaths
+load('../../priv/data/02-harmonized/2017-10-29-ideath.RData')
+
+# basic data pooling, selection and recoding
+infants <-
+  ideath %>%
+  # subset to study period
+  filter(date_of_delivery_y %in% 2005:2010) %>%
+  # add variables for survival analysis
+  mutate(
+    # death indicator
+    death = !is.na(age_at_death_d),
+    # survival time in days (observations right-censored at day 365)
+    survtime_d = if_else(death, age_at_death_d, 365L)
+  ) %>%
+  select(
+    # basic survival information
+    death, survtime_d,
+    # clinical variables
+    birthweight_c5, gestation_at_delivery_c4, apgar5,
+    congenital_anomalies_c3, plurality_c2
+  )
+rm(ideath)
+```
+
+Observed death rates and frailties
+----------------------------------
+
+The total population of newborns $N$, as observed in the data set `infants` consists of individuals $i=1, 2,\ldots,N$ with respective co-variate vector $X_i$. Every infant has a recorded survival time of $t_{i} \in [0, 366)$ completed days after birth and a death indicator $\delta_{i} \lbrace^{0~\text{if child survived infancy}}_{1~\text{if child died during infancy}}.$
+
+The total number of births $N$ in cohorts 2005--2010 is simply the number of rows in the data.
+
+```{r}
+N = nrow(infants)
+N
+```
+
+Summing over the binary death indicator variable yields the total number of infant deaths
+
+$$
+D = \sum_i^N \delta_i.
+$$
+
+```{r}
+D = sum(infants$death)
+D
+```
+
+Out of ~25.1 million infants born in the US during the years 2005--2010, 162546 did not survive until the age of 1. This makes for a probability of death of 0.0064, or ~65 deaths in 10,000 births. The probability of death $q$ is defined as
+
+$$
+q = \frac{D}{N}.
+$$
+
+An infant that survived for a time $t_i$ is considered *exposed* to the risk of infant death for a time of $t_i$ days. Therefore the *total exposure time* in a population is
+
+$$
+E=\sum_i^N t_i.
+$$
+
+An infant $i$ is said to be part of population stratum $j$ if $X_i=X_j$, i.e. when the co-variables observed on the infant are identical to those of stratum $j$.
+
+
+The total number of infant deaths in stratum $j$ is given by
+
+$$
+D_j = \sum_i^N \delta_{ij},
+$$
+
+consequently
+
+
+i.e. the total number of deaths in the cohort of infants.
+
+Summing over 
+
+Observed population mortality rate
+----------------------------------
+
+I calculate the observed population mortality rate as
+
+$$
+\bar\mu = \frac{\text{Total number of deaths during first hour of life}}
+{\text{Total population exposure during first hour of life}}.
+$$
+
+```{r}
+obs_pop_nmx <-
+  GetLifeTable(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
+               cuts = c(0, 1, Inf)) %>%
+  filter(is.finite(nx)) %>%
+  pull(nmx)
+obs_pop_nmx
+```
+
+
+Observed stratified mortality rates
+-----------------------------------
+
+For each sub-population $z$ I calculate the observed mortality rates during the first hour of life as
+
+$$
+\mu_z = \frac{\text{Number of deaths during first hour of life in stratum}~z}
+{\text{Total exposure during first hour of life in stratum}~z}.
+$$
+
+The relative exposure in stratum $z$ is
+
+$$
+p_z = \frac{\text{Total exposure during first hour of life in stratum}~z}
+{\text{Total population exposure during first hour of life}}.
+$$
+
+```{r}
+lt_strat <-
+  GetLifeTable(ideath_sub, x = survtime_h, nx = survtime_h_width, death = death,
+               cuts = c(0, 1, Inf),
+               birthweight_c5, gestation_at_delivery_c4, apgar5,
+               congenital_anomalies_c3, plurality_c2) %>%
+  filter(is.finite(nx)) %>%
+  select(birthweight_c5, gestation_at_delivery_c4, apgar5,
+         congenital_anomalies_c3, plurality_c2,
+         x, nx, Nx, nEx, nDx, nCx, nax, nmx) %>%
+  mutate(px = nEx/sum(nEx))
+```
+
+The overall population mortality rate should be equal to the exposure-weighted average mortality rates for the sub-populations.
+
+```{r}
+sum(lt_strat$nmx * lt_strat$px) / obs_pop_nmx
+```
+
+The distribution of frailties
+-----------------------------
+
+Frailty is a measure of *relative risk* in a population. For a sub-population $z$ I define frailty as
+
+$$
+\zeta_z = \frac{\mu_z} {\bar\mu},
+$$
+
+i.e. frailty is the stratum specific mortality rate scaled by the population mortality rate. Therefore modelling the distribution of mortality risk is equal to modelling the distribution of frailties scaled by $\bar\mu^{-1}$,
+
+$$
+f_{\zeta_z\bar\mu^{-1}} = f_{\mu_z}.
+$$
+
+### Empirical distribution functions
+
+How is the *observed* risk of death, as defined by the ratio of deaths to exposures, distributed in a population? The empirical *distribution* of the risk is given by the pair $(\mu_z, p_z)$, where $\mu_z$ is the observed mortality rate in stratum $z$ and $p_z$ the proportion of the total population exposure contributed by the individuals that stratum, i.e. $p_z$ expresses how common the risk $\mu_z$ is in the total population. As $\sum_z p_z=1$ I can define a probability mass function (PMF)
+
+$$
+f_{\mu_z} = p_z.
+$$
+
+In a case where two or more population strata have identical rates I collapse the equal rates into single rate with a probability mass equal to the sum of their exposures.
+
+#### Summary statistics
+
+Most summary statistics have to be calculated with population exposures ($p_z$) as *weights* as the mortality rates constitute observations on variably sized groups of individuals.
+
+```{r}
+# range of observed mortality rates
+range(lt_strat$nmx)
+# mean, variance, standard deviation and coefficient of variation
+# of observed mortality rates
+lt_strat %>% summarise(
+  mean_nmx = sum(nmx*px),
+  var_nmx = sum((nmx-mean_nmx)^2*px),
+  sd_nmx = sqrt(var_nmx),
+  cv_nmx = sd_nmx/mean_nmx
+)
+# quantiles of observed mortality rates
+with(lt_strat, Hmisc::wtd.quantile(nmx, px, type = 'i/n'))
+```
+
+From the summary statistics it is obvious that the data is *spread over multiple magnitudes*, but with more than 75% of the population experiencing a risk of less than 10 deaths per 1 million person hours of exposure ($\mu_{q.75}=4.5e-6$). The average mortality rate $\bar\mu=9.4 \times 10^{-4}$ is more than 100 times higher than the median mortality ($\mu_{q_{.75}}=4.5 \times 10^{-6}$), pointing towards a distribution of risk that is *extremely* skewed to the right and therefore best analyzed on a *log-scale*.
+
+#### Dealing with 0 deaths
+
+There are quite a few cases with *0 observed deaths* (59.8% of all sub-groups or 2.5% of the total population of birth feature zero deaths). The maximum likelihood estimate for the death rate is 0 in such cases, such is the ML-estimate for the probabililty of death. Because zero-risk is implausible and can't be modelled on a log-scale I impute the zero mortality rates by an alternative estimator for the risk of death. Quigley & Revie (2011) propose $\hat{q} \approx {(2.5n)^{-1}}$ as a point estimate for the probability of death when 0 events out of $n$ trials have been observed.
+
+```{r}
+# total observed exposure
+obs_tot_exp <- sum(lt_strat$nEx)
+# empirical distribution of observed rates
+empdist_obs_rates <-
+  lt_strat %>%
+  # impute 0 rates with alternative estimate
+  mutate(
+    # flag 0s
+    is_zero = ifelse(nmx == 0, TRUE, FALSE),
+    # use minimax estimator for nqx given 0 deaths
+    # and convert back to rate
+    nmx = ifelse(is_zero, -log(1-1/(2.5*Nx))/nx, nmx)
+  ) %>%
+  # collapse equal mortality rates into single rate with
+  # probability mass f_i equal to the sum of their exposures
+  group_by(nmx) %>%
+  summarise(f_i = sum(nEx)/obs_tot_exp) %>%
+  # add other other characterisations of the distribution of rates
+  arrange(nmx) %>%
+  mutate(
+    # rank
+    i = 1:n(),
+    # cumulative distribution function
+    F_i = cumsum(f_i)
+  )
+empdist_obs_rates
+```
+
+```{r fig.cap='The cumulative distribution of the risk of death during the first hour of life. The dotted line marks the population mortality rate.'}
+ggplot(empdist_obs_rates, aes(x = log10(nmx), y = F_i)) +
+  geom_step() +
+  scale_x_continuous(breaks = log10(10^(-6:1)), labels = 10^(-6:1),
+                     sec.axis = sec_axis(~.-log10(obs_pop_nmx),
+                                         breaks = log10(10^(-2:10)),
+                                         labels = 10^(-2:10),
+                                         name = 'Frailty')) +
+  geom_vline(xintercept = log10(obs_pop_nmx), lty = 'dotted') +
+  labs(x = 'Mortality rate (deaths per person-hour)', y = 'Share on total exposure') +
+  coord_cartesian(expand = FALSE) +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        axis.ticks = element_blank())
+```
+
+```{r fig.cap='The density distribution of the risk of death during the first hour of life. The dotted line marks the population mortality rate.'}
+ggplot(empdist_obs_rates) +
+  geom_segment(aes(x = log10(nmx), y = 0, xend = log10(nmx), yend = f_i)) +
+  scale_x_continuous(breaks = log10(10^(-6:1)), labels = 10^(-6:1),
+                     sec.axis = sec_axis(~.-log10(obs_pop_nmx),
+                                         breaks = log10(10^(-2:10)),
+                                         labels = 10^(-2:10),
+                                         name = 'Frailty')) +
+  geom_vline(xintercept = log10(obs_pop_nmx), lty = 'dotted') +
+  geom_rug(aes(x = log10(nmx), alpha = f_i), show.legend = FALSE) +
+  labs(x = 'Mortality rate', y = 'Relative exposure') +
+  coord_cartesian(expand = TRUE) +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        axis.ticks = element_blank())
+```
+
+Instead of estimating the distribution of mortality rates one can also look at the *concentration* of deaths over quantiles of a birth cohort. The *Lorenz curve* -- commonly used to show the distribution of income in a population -- can also be used to show how (un-)equal deaths are distributed in a cohort of newborns.
+
+```{r}
+# empirical distribution of observed deaths
+total_population_size <- sum(lt_strat$Nx)
+empdist_obs_deaths <-
+  lt_strat %>%
+  # collapse equal death counts into single
+  # probability mass f_i equal to the sum of their population shares
+  group_by(nDx) %>%
+  summarise(f_i = sum(Nx)/total_population_size) %>%
+  # add other other characterisations of the distribution of deaths
+  arrange(nDx) %>%
+  mutate(
+    # cumulative distribution function
+    F_i = cumsum(f_i),
+    # Lorenz function
+    S_i = cumsum(f_i*nDx),
+    L_i = S_i/last(S_i)
+  )
+empdist_obs_deaths
+```
+
+The curve shows that less than 5% of the births in a cohort of newborns result in more that 95% of the deaths.
+
+The Lorenz curve is a characterization of a probability distribution that shows how unequal a trait (in our case, the risk of death) is distributed in a population.
+
+```{r fig.cap='Lorenz curve of the distribution of deaths. The diagonal line marks a hypothetical equal distribution of deaths.'}
+ggplot(empdist_obs_deaths, aes(x = F_i, y = L_i)) +
+  geom_step() +
+  coord_fixed(xlim = 0:1, ylim = 0:1, expand = FALSE) +
+  scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1)) +
+  geom_abline(color = 'grey') +
+  labs(x = 'Share of births', y = 'Share of deaths') +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        axis.ticks = element_blank())
+```
+
+### Spline-based density estimate
+
+```{r}
+library('fda')
+
+empdist_obs_rates %>%
+  mutate(S_i = 1-F_i) %>%
+  filter(S_i != 0) -> empdist_obs_rates
+
+plot(x = log(empdist_obs_rates$nmx), y = log(1-empdist_obs_rates$F_i))
+
+# initial parameters of smoothing spline
+
+# functional data object specification
+spline_basis_lognmx <-
+  fd(
+    # cubic b-spline basis with single knot at each observation of log(nmx)
+    basisobj = create.bspline.basis(breaks = log(empdist_obs_rates$nmx))
+  )
+
+
+loglogSi_fit <-
+  with(empdist_obs_rates,
+       smooth.monotone(
+         log(nmx),   # x
+         log(1-F_i), # y
+         # model parameters
+         WfdParobj = fdPar(fdobj = spline_basis_lognmx, lambda = 10^-0.5))
+  )
+
+plot(x = log(empdist_obs_rates$nmx), y = log(1-empdist_obs_rates$F_i))
+prediction_domain <-
+  10^(seq(log10(min(empdist_obs_rates$nmx)), log10(max(empdist_obs_rates$nmx)), 0.01))
+lines(
+  log(prediction_domain),
+  loglogSi_fit$beta[1]+
+    loglogSi_fit$beta[2]*
+    eval.monfd(log(prediction_domain), loglogSi_fit$Wfdobj),
+  col = 'red'
+)
+
+logSiFun <- function (nmx) {
+  c(loglogSi_fit$beta[1] +
+      loglogSi_fit$beta[2]*
+      eval.monfd(nmx, loglogSi_fit$Wfdobj))
+}
+
+dlogSiFun <- function (nmx) {
+  c(loglogSi_fit$beta[1] + loglogSi_fit$beta[2]*
+      eval.monfd(nmx, loglogSi_fit$Wfdobj, Lfdobj = 1))
+}
+
+
+splinedist_rates <-
+  data_frame(
+    nmx = prediction_domain,
+    F_i = 1-exp(logSiFun(log(nmx))),
+    f_i = -exp(logSiFun(log(nmx)))*
+      dlogSiFun(log(nmx))*1/nmx
+  )
+
+# crude test if f_x integrates to 1
+sum(splinedist_rates$f_i*c(diff(splinedist_rates$nmx), 0), na.rm = T)
+
+
+plot(log(splinedist_rates$nmx), splinedist_rates$f_i, type = 'l')
+```
+
+
+### Kernel-density estimate
+
+The Kernel Density Estimator (KDE) is a non-parametric estimator of a random variables probability density. Given observed mortality rates $\mu_z$ and observed exposures $n_z$ I use the KDE to estimate a smooth density distribution of mortality $\hat{f}_{\text{KDE}}(\mu_z)$.
+
+In order to facilitate the KDE fit I model the distribution of the log transformed mortality instead. The distribution of the $\mu_z$ is then recovered by evaluating $\hat{f}_{\text{KDE}}(x=log(\mu_z))$ at $\exp(x)$.
+
+I fit the KDE to an empirical probability mass function (PMF) of observed, 0-adjusted mortality rates. To attain the PMF I aggregate multiple identical observed mortality rates into a single point-mass at that rate with the mass being the sum of the exposure times associated with each of the identcal rates. I then divide the masses by the total exposure time of the population to attain a distribution of probabilities. Thus the data used for fitting the KDE will consist of a vector of unique mortality rates and their corresponding weights given by the relative exposure.
+
+```{r}
+# kernel density estimate of distribution of observed rates
+kde_rates <- as.data.frame(with(empdist_obs_rates,
+                                density(log(nmx), weights = f_i),
+                                kernel = 'gaussian')[c('x', 'y')])
+```
+
+```{r fig.cap='Distribution of mortality rates during the hour following birth. US birth cohorts 2005-2010 stratified into 1209 groups by birthweight, gestation at delivery, APGAR score, congenital anomalies and plurality.'}
+# plot KDE versus observed frequency distribution of rates
+ggplot(empdist_obs_rates) +
+  geom_polygon(data = kde_rates, aes(x = exp(x), y = y),
+               color = NA, fill = 'grey90') +
+  geom_segment(aes(x = nmx, xend = nmx, y = 0, yend = f_i)) +
+  geom_rug(aes(x = nmx, alpha = f_i), sides = 'b', show.legend = FALSE) +
+  scale_x_continuous(trans = 'log10', breaks = 10^(-8:0)) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(y = 'Density', x = 'Observed mortality rate')
+```
+
+#### Summary statistics
+
+If $X$ is random variable "log-mortality" with distribution $\hat{f}_{\text{KDE}}(x=log(\mu_z))$, then $\text{E}[\exp(X)]$ is the estimated average population mortality. Via the *Law of the unconscious statistician* we have $\text{E}[exp(X)] = \int_x exp(X=x)\hat{f}_{\text{KDE}}(x)~\text{d}x$. Numeric integration yields the result.
+
+```{r}
+kde_mean <-
+  integrate(
+    approxfun(x = kde_rates$x, y = exp(kde_rates$x)*kde_rates$y),
+    lower = min(kde_rates$x), upper = max(kde_rates$x)
+  )$value
+kde_mean
+```
+
+It is convenient to calculate the variance of the estimated risk distribution via the identity $\text{Var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$, with $Y = \text{exp}(X)$ and $X ~ \hat{f}_{\text{KDE}}(x=log(\mu_z))$. Therefore we have $\text{Var}[\exp(X)] = \text{E}[\exp(X)^2] - \text{E}[exp(X)]^2$.
+
+```{r}
+kde_variance <-
+  integrate(
+    approxfun(x = kde_rates$x, y = exp(kde_rates$x)^2*kde_rates$y),
+    lower = min(kde_rates$x), upper = max(kde_rates$x)
+  )$value - kde_mean^2
+kde_variance
+```
+
+### Regression estimation
+
+```{r}
+rate_fit <-
+  glm(nDx~
+        birthweight_c5+
+        gestation_at_delivery_c4+
+        apgar5+
+        congenital_anomalies_c3+
+        plurality_c2+
+        offset(log(nEx)),
+      data = mutate_at(lt_strat, vars(birthweight_c5, gestation_at_delivery_c4,
+                                      apgar5, congenital_anomalies_c3,
+                                      plurality_c2),
+                       funs(ifelse(is.na(.), 'unknown', .))),
+      family = poisson(link = 'log'))
+
+lt_strat$pois_rate <- predict(rate_fit, type = 'response')/lt_strat$nEx
+
+# Poisson predicted weighted unique rates
+pois_weighted_unique_rates <-
+  lt_strat %>%
+  # sum up the share for equal mortality rates
+  group_by(pois_rate) %>%
+  summarise(px = sum(nEx)/obs_tot_exp)
+
+# poisson predicted population mortality rate
+pois_pop_nmx <- sum(with(pois_weighted_unique_rates, pois_rate*px))
+
+# plot Poisson predicted frequency distribution of rates
+ggplot(pois_weighted_unique_rates) +
+  geom_segment(aes(x = pois_rate, xend = pois_rate, y = 0, yend = px)) +
+  geom_rug(aes(x = pois_rate, alpha = px), sides = 'b', show.legend = FALSE) +
+  scale_x_continuous(trans = 'log10', breaks = 10^(-8:0)) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(y = 'Density', x = 'Observed mortality rate',
+       title = 'Distribution of Poisson predicted mortality rates during the hour following birth',
+       subtitle = 'US birth cohorts 2005-2010 stratified into 1209 groups by\nbirthweight, gestation at delivery, APGAR score, congenital anomalies and plurality.')
+```
+
+### Bayesian estimation
+
+My basic assumptions concerning the distribution of mortality risk in a population of newborns are:
+
+- there is no zero risk, the risk must be positive
+- the distribution of risk is smooth
+- the distribution of risk has a long right tail of improbable, but high risk newborns
+
+Literature
+----------
+
+- Quigley, J., & Revie, M. (2011). Estimating the Probability of Rare Events: Addressing Zero Failure Data. Risk Analysis, 31(7), 1120-1132. https://doi.org/10.1111/j.1539-6924.2010.01568.x
