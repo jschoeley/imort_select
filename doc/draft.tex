@@ -1,0 +1,258 @@
+%%% Thesis Style
+%%% Jonas Schöley
+%%% 2020-10-26
+
+%--- Documentclass -----------------------------------------------------
+
+\documentclass[10pt, twoside]{article}
+\raggedbottom
+
+%--- Font/encoding -----------------------------------------------------
+
+\usepackage[utf8]{inputenc}       % .tex-file text encoding
+\usepackage[T1]{fontenc}          % vector fonts and special chars in output
+\usepackage{newtxtext, newtxmath} % Times Roman font family
+\let\Bbbk\relax % avoids clash between newtxmath and amssymb
+
+%--- Maths -------------------------------------------------------------
+
+\usepackage{amsmath}  % various maths features
+\usepackage{amssymb}  % maths symbols
+\usepackage{mathrsfs} % maths script fonts
+
+%--- Links -------------------------------------------------------------
+
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  breaklinks=true,
+  colorlinks=false,
+  pdftitle={$title$}
+}
+\urlstyle{rm}
+
+%--- Misc --------------------------------------------------------------
+
+\usepackage{etoolbox}  % allows to inject commands inside environments
+%\usepackage{placeins} % control the placement of floats via \FloatBarrier
+\usepackage{float}     % control placement of floats
+\usepackage{xcolor}    % for colored links
+
+%--- Figures -----------------------------------------------------------
+
+$if(graphics)$
+
+  \usepackage{graphicx} % include external images
+  \floatplacement{figure}{H}
+
+  % generate all images so they have a width \cnstmaxfigwidth
+  % images get their normal width if they fit onto the page
+  % images are scaled down if they would overflow the margins
+  \makeatletter
+    \def\cnstmaxfigwidth{
+      \ifdim \Gin@nat@width>\linewidth
+        \linewidth
+      \else \Gin@nat@width
+      \fi
+    }
+  \makeatother
+  \let\Oldincludegraphics\includegraphics
+  \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=\cnstmaxfigwidth]{#1}}
+
+  %\AfterEndEnvironment{figure}{\FloatBarrier}
+
+$endif$
+
+%--- Captions ----------------------------------------------------------
+
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{capsep}{:\hspace{0.2cm}}
+\captionsetup[figure]{
+            labelsep        = capsep,
+            name            = Figure,
+            font            = {rm, small},
+            labelfont       = bf,
+            justification   = justified,
+            singlelinecheck = true,
+            indention       = 0.5cm
+}
+\captionsetup[table]{
+            labelsep        = capsep,
+            name            = Table,
+            font            = {rm, small},
+            labelfont       = bf,
+            justification   = justified,
+            singlelinecheck = true,
+            indention       = 0.5cm
+}
+
+% captions above
+\floatstyle{plaintop}
+\restylefloat{table}
+\restylefloat{figure}
+
+%--- Localization ------------------------------------------------------
+
+% babel
+\usepackage[english]{babel} % document language/localization
+\usepackage[htt]{hyphenat}  % hyphenation rules
+
+%--- Bibliography ------------------------------------------------------
+
+\usepackage{natbib}
+\setcitestyle{aysep={}}
+\bibliographystyle{abbrvnat}
+\newcommand{\doi}[1]{\href{http://www.dx.doi.org/#1}{doi:#1}}
+
+%--- General layout ----------------------------------------------------
+
+\usepackage{geometry}
+\geometry{
+  paperheight = 24cm,
+  paperwidth  = 17cm,
+  top         = 2.54cm,
+  bottom      = 2.54cm,
+  inner       = 2cm,
+  outer       = 2.54cm,
+  footskip    = 11mm,
+  headheight  = 1cm,
+  headsep     = 0.75cm,
+  showframe   = false
+}
+
+% change spacing
+\setlength{\parskip}{0.5ex}
+\setlength{\parindent}{0cm}
+\setlength{\bibsep}{.18cm}
+
+% no page numbers
+%\pagenumbering{gobble}
+
+% avoid orphans and widows
+\widowpenalty = 10000
+\clubpenalty  = 10000
+
+% don't break footnotes
+\interfootnotelinepenalty = 10000
+
+% don't hyphenate across pages
+\brokenpenalty10000\relax
+
+% increase fraction of page that can be used by floats
+% before a pure float-page is created
+\renewcommand{\floatpagefraction}{.8}
+
+%--- Lists -------------------------------------------------------------
+
+% tight lists
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+%--- Sections ----------------------------------------------------------
+
+% depth of table of content
+$if(toc_depth)$
+\setcounter{tocdepth}{$toc_depth$}
+$endif$
+
+% spacing
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-24pt}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\large\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-24pt}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+\makeatother
+
+% style
+\usepackage{titlesec}
+\titleformat{\section}[hang]{\raggedright\normalfont\bfseries\large}{\thesection.}{1ex}{}
+\titleformat{\subsection}[hang]{\raggedright\normalfont\bfseries}{\thesubsection}{1ex}{}
+\titleformat{\subsubsection}[hang]{\raggedright\normalfont\bfseries}{\thesubsubsection}{1ex}{}
+
+%--- Footnotes ---------------------------------------------------------
+
+\usepackage[bottom]{footmisc}
+
+% make linebreaks start under footnote label
+\setlength{\footnotemargin}{0.3em}
+
+\let\oldfootnote\footnote
+\renewcommand\footnote[1]{%
+\oldfootnote{\hspace{0.6mm}#1}}
+
+%--- Tables ------------------------------------------------------------
+
+$if(tables)$
+  \usepackage{array,longtable,booktabs,multirow}
+  % -- This is needed because raggedright in table elements redefines \\:
+  \newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+  \let\PBS=\PreserveBackslash
+  \usepackage{etoolbox} % global table format
+  \AtBeginEnvironment{tabular}{\scriptsize}
+$endif$
+
+%--- Code listings -----------------------------------------------------
+
+$if(highlighting-macros)$
+  $highlighting-macros$
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+    numbers=left,fontsize=\footnotesize,commandchars=\\\{\}
+  }
+$endif$
+
+%--- Subscripts --------------------------------------------------------
+
+$if(subscript)$
+  \newcommand{\textsubscr}[1]{\ensuremath{_{\scriptsize\textrm{#1}}}}
+$endif$
+
+%--- Includes ----------------------------------------------------------
+
+% header_includes
+$for(header-includes)$
+  $header-includes$
+$endfor$
+
+%--- Title, authors ----------------------------------------------------
+
+$if(title)$
+  \title{\large\textbf{$title$}\vskip 0em}
+$endif$
+$if(author)$
+  \author{$for(author)$\normalsize\textrm{\textbf{$author$}}$sep$\\$endfor$}
+$endif$
+\date{\vspace{-5ex}}
+
+%--- Print main text ---------------------------------------------------
+
+\begin{document}
+
+$if(title)$
+  \maketitle
+$endif$
+
+\vspace*{-24pt}
+\vspace*{5mm}
+
+$if(abstract)$
+\section*{Abstract}
+$abstract$
+\newpage
+$endif$
+
+$if(toc)$
+\tableofcontents
+\newpage
+$endif$
+
+$body$
+
+\newpage
+
+\bibliography{$bibliography$}
+
+\end{document}
