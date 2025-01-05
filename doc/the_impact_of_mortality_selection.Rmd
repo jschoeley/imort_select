@@ -544,7 +544,9 @@ A peculiar finding is the near-perfect power-law relationship between the mean a
 
 The sudden drop in population mortality following birth is predominantly the result of stratum specific hazard rates quickly converging towards rather low levels. The compositional shift in the population resulting from mortality selection only has a minimal impact on the age trajectory of neonatal mortality.
 
-It remains to be seen if the simple power-law expression that describes the time-evolution of mean and variance in mortality among a cohort of newborns replicates in other populations and at other ages. The prospect of having a 2-parameter expression for the mortality dynamics in a heterogeneous aging cohort may motivate future inquiries in that direction.
+Hazard trajectories in the first days following birth are highly non-proportional between risk strata. Thus the common assumption of proportionality, as in the popular Cox model, may lead to biased estimates in the study of neonatal mortality.
+
+It remains to be seen if the simple Taylor's law expression that describes the time-evolution of mean and variance in mortality among a cohort of newborns replicates in other populations and at other ages. The prospect of having a 2-parameter expression for the mortality dynamics in a heterogeneous aging cohort may motivate future inquiries in that direction.
 
 \clearpage
 
